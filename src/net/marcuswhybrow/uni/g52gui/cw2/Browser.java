@@ -1,10 +1,16 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -18,16 +24,32 @@ public class Browser implements ActionListener
 	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
 	private Window activeWindow = null;
 
+	private Preferences preferences;
+
+	private Image icon;
+
 	private Browser() {}
 
 	private void setup()
 	{
-		// Mac specifc stuff to get the menu bar to integrate with the OS
-		// and to give a more user friendly program name
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
+		try
+		{
+			icon = ImageIO.read(getClass().getClassLoader().getResource("assets/icon.png"));
+		}
+		catch (IOException ex)
+		{
+			System.err.println("Couldn't find the Browser icon image");
+		}
+
+		// Mac Specific Stuff
+		if (System.getProperty("mrj.version") != null)
+		{
+			ApplicationAdapter.setup();
+		}
 		
 		windows.add(new Window());
+
+		preferences = new Preferences();
 	}
 
 	public static synchronized Browser get()
@@ -114,8 +136,30 @@ public class Browser implements ActionListener
 		}
 	}
 
+	public void showPreferences()
+	{
+		preferences.setVisible(true);
+	}
+
+	public Image getIcon()
+	{
+		return icon;
+	}
+
 	public static void main(String[] args)
 	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (Exception e)
+		{
+			System.err.println("Unable to set look and feel");
+		}
+
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
 		Browser.get();
 	}
 }
