@@ -25,5 +25,9 @@ public class AddressBar extends JTextField implements ActionListener
 	{
     	window.goTo(getText());
 	}
-	
+
+	public void updateAddress(String address)
+	{
+		setText(address);
+	}
 }

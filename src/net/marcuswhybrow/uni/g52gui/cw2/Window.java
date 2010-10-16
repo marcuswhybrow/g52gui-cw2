@@ -10,10 +10,10 @@ import javax.swing.JFrame;
  *
  * @author Marcus Whybrow
  */
-public class Window extends JFrame implements WindowListener
+public class Window extends JFrame implements WindowListener, Reopenable
 {
-	Tabs tabs = new Tabs(this);
-	AddressBar addressBar = new AddressBar(this);
+	private Tabs tabs = new Tabs(this);
+	private AddressBar addressBar = new AddressBar(this);
 	
 	public Window()
 	{
@@ -22,6 +22,8 @@ public class Window extends JFrame implements WindowListener
 		
 		pane.add(addressBar, BorderLayout.NORTH);
 		pane.add(tabs, BorderLayout.CENTER);
+
+		activeTabHasChanged();
 
 		setTitle("Window");
 		pack();
@@ -36,6 +38,11 @@ public class Window extends JFrame implements WindowListener
 		addWindowListener(this);
 	}
 
+	public AddressBar getAddressBar()
+	{
+		return addressBar;
+	}
+
 	public void goTo(String url)
 	{
 		goTo(url, tabs.getActiveTab());
@@ -45,6 +52,19 @@ public class Window extends JFrame implements WindowListener
 	{
 		tab.goTo(url);
 	}
+
+	public Tabs getTabs()
+	{
+		return tabs;
+	}
+
+	public void activeTabHasChanged()
+	{
+		Tab activeTab = tabs.getActiveTab();
+		if (activeTab != null)
+			addressBar.updateAddress(activeTab.getAddress());
+	}
+
 
 	public void windowOpened(WindowEvent e)
 	{
@@ -73,7 +93,7 @@ public class Window extends JFrame implements WindowListener
 
 	public void windowActivated(WindowEvent e)
 	{
-		// do nothing
+		Browser.get().setActiveWindow(this);
 	}
 
 	public void windowDeactivated(WindowEvent e)
@@ -83,6 +103,33 @@ public class Window extends JFrame implements WindowListener
 
 	public void close()
 	{
-		Browser.get().windowHasClosed(this);
+		close(false);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param cascadeClose True if the window was closed as the result of a all
+	 * tabs being closed and not the window being closed directly.
+	 */
+	public void close(boolean cascadeClose)
+	{
+		System.out.println("closing window");
+		setVisible(false);
+		if (cascadeClose)
+			Browser.get().windowHasClosed(this, false /* Don't put window on the closed items stack */);
+		else
+			Browser.get().windowHasClosed(this);
+	}
+
+	public void reopen()
+	{
+		System.out.println("opening window");
+		setVisible(true);
+	}
+
+	public boolean isClosed()
+	{
+		return !isVisible();
 	}
 }
