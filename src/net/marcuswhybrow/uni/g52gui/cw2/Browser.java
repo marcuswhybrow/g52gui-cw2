@@ -3,14 +3,25 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -23,6 +34,9 @@ public class Browser implements ActionListener
 	private ArrayList<Window> windows = new ArrayList<Window>();
 	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
 	private Window activeWindow = null;
+
+	private Folder bookmarksBar;
+	private Folder otherBookmarks;
 
 	private Preferences preferences;
 
@@ -50,6 +64,94 @@ public class Browser implements ActionListener
 		windows.add(new Window());
 
 		preferences = new Preferences();
+
+		bookmarksBar = readFromFile("bookmarks_bar.xml");
+		otherBookmarks = readFromFile("other_bookmarks.xml");
+
+		if (bookmarksBar == null)
+			bookmarksBar = new Folder();
+		if (otherBookmarks == null)
+			otherBookmarks = new Folder();
+
+		System.out.println(bookmarksBar.toString());
+		System.out.println(otherBookmarks.toString());
+	}
+
+	private static Folder readFromFile(String filePath)
+	{
+		Document doc = null;
+		try
+		{
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filePath));
+		}
+		catch (ParserConfigurationException ex)
+		{
+			System.err.println("parser configuration error");
+		}
+		catch (SAXException ex)
+		{
+			System.err.println("SAX error");
+		}
+		catch (IOException ex)
+		{
+			System.err.println("IO error");
+		}
+
+		if (doc != null)
+		{
+			doc.getDocumentElement().normalize();
+			return (Folder) convert(doc.getDocumentElement());
+		}
+		return null;
+	}
+
+	private static void writeToFile(Folder folder, String filePath)
+	{
+		Document doc = null;
+		try
+		{
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		}
+		catch (ParserConfigurationException ex)
+		{
+			System.err.println("Some sort of XML error");
+		}
+
+		if (doc != null)
+		{
+			doc.appendChild(folder.convertToNode(doc));
+			try
+			{
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(new File(filePath)));
+			}
+			catch (TransformerException ex)
+			{
+				System.err.print("XML transformer error");
+			}
+		}
+	}
+
+	private static BookmarkItem convert(Element element)
+	{
+		if (element.getNodeName().equals(Folder.getRootFolderName()))
+		{
+			Folder rootFolder = new Folder();
+			NodeList nodes = element.getChildNodes();
+			for (int i = 0; i < nodes.getLength(); i++)
+				rootFolder.addChild(convert((Element) nodes.item(i)));
+			return rootFolder;
+		}
+		else if (element.getNodeName().equals(Bookmark.getXmlElementName()))
+			return new Bookmark(element.getAttribute("address"), element.getAttribute("title"));
+		else if (element.getNodeName().equals(Folder.getXmlElementName()))
+		{
+			Folder folder = new Folder(element.getAttribute("name"));
+			NodeList nodes = element.getChildNodes();
+			for (int i = 0; i < nodes.getLength(); i++)
+				folder.addChild(convert((Element) nodes.item(i)));
+			return folder;
+		}
+		return null;
 	}
 
 	public static synchronized Browser get()
@@ -92,7 +194,14 @@ public class Browser implements ActionListener
 		if (putOnClosedItemStack)
 			addClosedItem(window);
 		if (windows.size() == 0)
-			System.exit(0);
+			close();
+	}
+
+	public void close()
+	{
+		Browser.writeToFile(bookmarksBar, "bookmarks_bar.xml");
+		Browser.writeToFile(otherBookmarks, "other_bookmarks.xml");
+		System.exit(0);
 	}
 
 	public void addClosedItem(Reopenable item)

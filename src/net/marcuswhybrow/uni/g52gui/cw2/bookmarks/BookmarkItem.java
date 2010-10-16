@@ -1,0 +1,15 @@
+package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+/**
+ *
+ * @author Marcus Whybrow
+ */
+public interface BookmarkItem
+{
+	public Node convertToNode(Document doc);
+
+	public void setParent(Folder folder);
+}

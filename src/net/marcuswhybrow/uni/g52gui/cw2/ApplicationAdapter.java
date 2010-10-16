@@ -28,7 +28,7 @@ public class ApplicationAdapter extends com.apple.eawt.ApplicationAdapter
 	@Override
 	public void handleQuit(ApplicationEvent e)
 	{
-		System.exit(0);
+		Browser.get().close();
 	}
 
 	@Override
