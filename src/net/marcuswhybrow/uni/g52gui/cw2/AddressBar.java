@@ -23,7 +23,14 @@ public class AddressBar extends JTextField implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
-    	window.goTo(getText());
+		String address = getText();
+
+		if (! address.contains("://") && address.contains("."))
+		{
+			address = "http://".concat(address);
+			setText(address);
+		}
+    	window.goTo(address);
 	}
 
 	public void updateAddress(String address)
