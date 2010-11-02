@@ -25,7 +25,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class TabButton extends JPanel
 {
 	/** The tab which this button should close */
-	private final Tab tab;
+	private Tab tab;
 
 	public TabButton(Tab tab)
 	{
@@ -108,7 +108,7 @@ public class TabButton extends JPanel
 			g2.setColor(Color.BLACK);
 
 			if (getModel().isRollover())
-				g2.setColor(Color.MAGENTA);
+				g2.setColor(Color.BLUE);
 
 			int delta = 6;
 			g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);

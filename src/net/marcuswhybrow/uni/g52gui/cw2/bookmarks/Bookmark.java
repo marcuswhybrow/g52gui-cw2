@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,14 +58,24 @@ public class Bookmark implements BookmarkItem
 		// do nothing
 	}
 
+	public String printOut()
+	{
+		return address + " - " + title;
+	}
+
 	@Override
 	public String toString()
 	{
-		return address + " - " + title;
+		return title;
 	}
 
 	public static String getXmlElementName()
 	{
 		return "bookmark";
+	}
+
+	public void delete()
+	{
+		parent.removeChild(this);
 	}
 }

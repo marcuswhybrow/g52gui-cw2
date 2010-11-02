@@ -11,17 +11,16 @@ import org.w3c.dom.Node;
  */
 public class Folder implements BookmarkItem
 {
-	private Folder parent;
-	private String name;
-	private ArrayList<BookmarkItem> children = new ArrayList<BookmarkItem>();
-	private boolean root = false;
+	protected Folder parent;
+	protected String name;
+	protected ArrayList<BookmarkItem> children = new ArrayList<BookmarkItem>();
+	protected boolean root = false;
 
 	private static String rootFolderName = "bookmarks";
 
 	public Folder()
 	{
-		root = true;
-		name = rootFolderName;
+		this("New Untitled Folder");
 	}
 
 	public Folder(String name)
@@ -45,25 +44,31 @@ public class Folder implements BookmarkItem
 	public Node convertToNode(Document doc)
 	{
 		Element folder;
+		
 		if (isRoot())
 			folder = doc.createElement(getRootFolderName());
 		else
-		{
 			folder = doc.createElement(getXmlElementName());
-			folder.setAttribute("name", name);
-		}
+
+		folder.setAttribute("name", name);
+		
 		for (BookmarkItem item : children)
 			folder.appendChild(item.convertToNode(doc));
 		return folder;
 	}
 
-	@Override
-	public String toString()
+	public String printOut()
 	{
 		String output = name + " (  ";
 		for (BookmarkItem item : children)
-			output += item.toString() + ", ";
+			output += item.printOut() + ", ";
 		return output.substring(0, output.length() - 2) + "  )";
+	}
+
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 
 	public void addChild(BookmarkItem item)
@@ -88,5 +93,42 @@ public class Folder implements BookmarkItem
 	public static String getXmlElementName()
 	{
 		return "folder";
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public BookmarkItem[] getChildren()
+	{
+		BookmarkItem[] items = new BookmarkItem[children.size()];
+		return children.toArray(items);
+	}
+
+	void removeChild(BookmarkItem item)
+	{
+		children.remove(item);
+	}
+
+	public void delete() throws CannotDeleteRootFolderExcetpion
+	{
+		if (!isRoot())
+			parent.removeChild(this);
+		else
+			throw new CannotDeleteRootFolderExcetpion();
+	}
+
+	public class CannotDeleteRootFolderExcetpion extends Exception
+	{
+		public CannotDeleteRootFolderExcetpion()
+		{
+			super();
+		}
 	}
 }

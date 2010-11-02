@@ -12,4 +12,8 @@ public interface BookmarkItem
 	public Node convertToNode(Document doc);
 
 	public void setParent(Folder folder);
+
+	public String printOut();
+
+	public void delete() throws Folder.CannotDeleteRootFolderExcetpion;
 }

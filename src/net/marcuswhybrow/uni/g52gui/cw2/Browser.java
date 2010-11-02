@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.imageio.ImageIO;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,6 +19,8 @@ import javax.xml.transform.stream.StreamResult;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
+import org.lobobrowser.main.PlatformInit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -48,6 +51,19 @@ public class Browser implements ActionListener
 	{
 		try
 		{
+			// Initialise logging such that only warnings are printed out
+			PlatformInit.getInstance().initLogging(false);
+
+			// Required for extentions to work
+			PlatformInit.getInstance().init(false, false);
+		}
+		catch (Exception ex)
+		{
+			System.err.println("Something when wrong with Lobo");
+		}
+
+		try
+		{
 			icon = ImageIO.read(getClass().getClassLoader().getResource("assets/icon.png"));
 		}
 		catch (IOException ex)
@@ -58,10 +74,10 @@ public class Browser implements ActionListener
 		// Mac Specific Stuff
 		if (System.getProperty("mrj.version") != null)
 		{
-			ApplicationAdapter.setup();
+//			ApplicationAdapter.setup();
 		}
 		
-		windows.add(new Window());
+		openWindow();
 
 		preferences = new Preferences();
 
@@ -69,12 +85,19 @@ public class Browser implements ActionListener
 		otherBookmarks = readFromFile("other_bookmarks.xml");
 
 		if (bookmarksBar == null)
-			bookmarksBar = new Folder();
+			bookmarksBar = new RootFolder("Bookmarks Bar");
 		if (otherBookmarks == null)
-			otherBookmarks = new Folder();
+			otherBookmarks = new RootFolder("Other Bookmarks");
+	}
 
-		System.out.println(bookmarksBar.toString());
-		System.out.println(otherBookmarks.toString());
+	public Folder getBookmarksBarBookmarks()
+	{
+		return bookmarksBar;
+	}
+
+	public Folder getOtherBookmarksBookmarks()
+	{
+		return otherBookmarks;
 	}
 
 	private static Folder readFromFile(String filePath)
@@ -135,7 +158,7 @@ public class Browser implements ActionListener
 	{
 		if (element.getNodeName().equals(Folder.getRootFolderName()))
 		{
-			Folder rootFolder = new Folder();
+			Folder rootFolder = new RootFolder(element.getAttribute("name"));
 			NodeList nodes = element.getChildNodes();
 			for (int i = 0; i < nodes.getLength(); i++)
 				rootFolder.addChild(convert((Element) nodes.item(i)));
@@ -170,12 +193,11 @@ public class Browser implements ActionListener
 		throw new CloneNotSupportedException();
 	}
 
-	public Window openWindow()
+	public void openWindow()
 	{
 		Window window = new Window();
 		windows.add(window);
-		activeWindow = window;
-		return window;
+		setActiveWindow(window);
 	}
 
 	public void setActiveWindow(Window window)
@@ -233,7 +255,7 @@ public class Browser implements ActionListener
 			if (e.getActionCommand().equals("New Window"))
 				Browser.get().openWindow();
 			else if (e.getActionCommand().equals("New Tab"))
-				activeWindow.getTabs().openTab();
+				activeWindow.getTabs().openWebPageTab();
 			else if (e.getActionCommand().equals("Close Window"))
 				activeWindow.close();
 			else if (e.getActionCommand().equals("Close Tab"))
@@ -242,6 +264,9 @@ public class Browser implements ActionListener
 				openLastClosedItem();
 			else if (e.getActionCommand().equals("Open Location"))
 				activeWindow.getAddressBar().requestFocus();
+
+			else if (e.getActionCommand().equals("Bookmark Manager"))
+				activeWindow.getTabs().openBookmarkManagerTab();
 		}
 	}
 
@@ -255,8 +280,17 @@ public class Browser implements ActionListener
 		return icon;
 	}
 
+	public Window getActiveWindow()
+	{
+		return activeWindow;
+	}
+
 	public static void main(String[] args)
 	{
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
+
 		try
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -266,9 +300,10 @@ public class Browser implements ActionListener
 			System.err.println("Unable to set look and feel");
 		}
 
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
-		System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
+		// Set the tree leaf icon in a JTree to be the same as the folder icon
+		UIDefaults def = UIManager.getLookAndFeelDefaults();
+		def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
+
 		Browser.get();
 	}
 }

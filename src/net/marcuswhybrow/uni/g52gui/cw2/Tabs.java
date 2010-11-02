@@ -1,10 +1,11 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.Component;
 import java.util.ArrayList;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTab;
 
 /**
  *
@@ -17,47 +18,61 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	private ArrayList<Tab> tabs;
 	private ArrayList<Tab> closedTabs;
 	private Tab activeTab;
+	private BookmarkManagerTab bookmarkManagerTab;
 
 	public Tabs(Window window)
 	{
 		this.window = window;
 		tabs = new ArrayList<Tab>();
 		closedTabs = new ArrayList<Tab>();
-		openTab("http://google.com");
+		openWebPageTab("http://google.com");
 
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		addChangeListener(this);
 	}
 
-	public void openTab()
+	public void openWebPageTab()
 	{
-		openTab("");
+		openWebPageTab("");
 	}
 
-	public void openTab(Tab tab)
+	public void openWebPageTab(String url)
 	{
-		tabs.add(tab);
-		addTab(null, tab);
-		setTabComponentAt(indexOfComponent(tab), new TabButton(tab));
-		setActiveTab(tab);
-	}
-
-	public void openTab(String url)
-	{
-		Tab tab = new Tab(this);
-		tabs.add(tab);
-
-		addTab(null, tab);
-		setTabComponentAt(indexOfComponent(tab), new TabButton(tab));
-
+		WebPageTab tab = new WebPageTab(this);
+		openGenericTab(tab);
 		if (url != null)
 			window.goTo(url, tab);
+	}
+
+
+	public void openBookmarkManagerTab()
+	{
+		if (bookmarkManagerTab == null)
+		{
+			bookmarkManagerTab = new BookmarkManagerTab(this);
+			openGenericTab(bookmarkManagerTab);
+		}
+		else
+		{
+			if (bookmarkManagerTab.isClosed)
+				bookmarkManagerTab.reopen();
+			setActiveTab(bookmarkManagerTab);
+		}
+	}
+
+	public void openGenericTab(Tab tab)
+	{
+		tabs.add(tab);
+		addTab(null, tab);
+		setTabComponentAt(indexOfComponent(tab), new TabButton(tab));
 		setActiveTab(tab);
 	}
+
+
 
 	public void setActiveTab(Tab tab)
 	{
-		setSelectedComponent(tab);
+		setSelectedComponent((Component) tab);
 		activeTab = tab;
 	}
 
