@@ -2,34 +2,59 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**
  *
  * @author Marcus Whybrow
  */
-public abstract class Tab extends JPanel implements Reopenable
+public class Tab extends JPanel implements Reopenable
 {
 	protected Tabs tabs;
 	protected String title;
 	protected boolean isClosed;
 	protected String address;
 	
-	private JPanel mainArea;
+	private TabContent content;
 	private AddressBar addressBar;
 
-	public Tab(Tabs tabs)
+	private TabButton tabButton;
+
+	public Tab(Tabs tabs, TabContent tabContent)
 	{
 		this.tabs = tabs;
 		setLayout(new BorderLayout());
-		mainArea = new JPanel();
+		this.content = tabContent;
 		addressBar = new AddressBar(this);
 		add(addressBar, BorderLayout.NORTH);
-		add(mainArea, BorderLayout.CENTER);
+		add(tabContent.getContent(), BorderLayout.CENTER);
+
+		if (tabContent instanceof BookmarkManagerTabContent)
+			title = "Bookmark Manager";
+		else
+			title = "New Tab";
+
+		tabButton = new TabButton(this, title);
+		tabs.addTab(null, this);
+		tabs.setTabComponentAt(tabs.indexOfComponent(this), tabButton);
 	}
 
-	public JPanel getMainArea()
+	private void updateTabButtonTitle()
 	{
-		return mainArea;
+		tabButton.setTitle(title);
+	}
+
+	public TabContent getTabContent()
+	{
+		return content;
+	}
+
+	public void setTabContent(TabContent tabContent)
+	{
+		remove(this.content.getContent());
+		this.content = tabContent;
+		add(this.content.getContent(), BorderLayout.CENTER);
+		validate();
 	}
 
 	public AddressBar getAddressBar()
@@ -49,7 +74,33 @@ public abstract class Tab extends JPanel implements Reopenable
 
 	public void goTo(String address)
 	{
-		// does nothing by default
+		// assumes HTTP
+		if (address != null)
+		{
+			addressBar.updateAddress(address);
+
+			// The address bar can change the address (for example add http://)
+			address = addressBar.getText();
+			
+			if (address.startsWith("http://"))
+			{
+				if (! (content.getContent() instanceof WebPageTabContent))
+					setTabContent(new WebPageTabContent());
+				
+				((WebPageTabContent) content.getContent()).goTo(address);
+
+				title = address.substring(7);
+				updateTabButtonTitle();
+			}
+			else if (address.startsWith("browser://bookmarks"))
+			{
+				if (! (content.getContent() instanceof BookmarkManagerTabContent))
+					setTabContent(new BookmarkManagerTabContent());
+				
+				title = "Bookmark Manager";
+				updateTabButtonTitle();
+			}
+		}
 	}
 
 	public void close()

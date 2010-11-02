@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTab;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**
  *
@@ -16,15 +16,12 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	/** The window these tabs belong to */
 	private Window window;
 	private ArrayList<Tab> tabs;
-	private ArrayList<Tab> closedTabs;
 	private Tab activeTab;
-	private BookmarkManagerTab bookmarkManagerTab;
 
 	public Tabs(Window window)
 	{
 		this.window = window;
 		tabs = new ArrayList<Tab>();
-		closedTabs = new ArrayList<Tab>();
 		openWebPageTab("http://google.com");
 
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -38,37 +35,31 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void openWebPageTab(String url)
 	{
-		WebPageTab tab = new WebPageTab(this);
+		Tab tab = new Tab(this, new WebPageTabContent());
 		openGenericTab(tab);
-		if (url != null)
-			window.goTo(url, tab);
+		tab.goTo(url);
 	}
 
 
 	public void openBookmarkManagerTab()
 	{
-		if (bookmarkManagerTab == null)
-		{
-			bookmarkManagerTab = new BookmarkManagerTab(this);
-			openGenericTab(bookmarkManagerTab);
-		}
-		else
-		{
-			if (bookmarkManagerTab.isClosed)
-				bookmarkManagerTab.reopen();
-			setActiveTab(bookmarkManagerTab);
-		}
+		Tab tab = new Tab(this, new BookmarkManagerTabContent());
+		openGenericTab(tab);
 	}
 
 	public void openGenericTab(Tab tab)
 	{
 		tabs.add(tab);
-		addTab(null, tab);
-		setTabComponentAt(indexOfComponent(tab), new TabButton(tab));
 		setActiveTab(tab);
 	}
 
-
+	public void replaceTab(Tab oldTab, Tab newTab)
+	{
+		TabButton tabButton = (TabButton) getTabComponentAt(indexOfComponent(oldTab));
+		oldTab.close();
+		openGenericTab(newTab);
+		tabButton.setTab(newTab);
+	}
 
 	public void setActiveTab(Tab tab)
 	{

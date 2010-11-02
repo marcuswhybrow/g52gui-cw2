@@ -1,6 +1,5 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +8,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -21,30 +19,21 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.Tab;
-import net.marcuswhybrow.uni.g52gui.cw2.Tabs;
+import net.marcuswhybrow.uni.g52gui.cw2.TabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
 
 /**
  *
  * @author Marcus Whybrow
  */
-public class BookmarkManagerTab extends Tab
+public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 {
-	private JSplitPane splitPane;
 	private FolderTree bookmarksTree;
 	private JTree bookmarksList;
 	private ContextMenu contextMenu;
 
-	private JScrollPane bookmarksListScrollPane = new JScrollPane();
-
-	public BookmarkManagerTab(Tabs tabs)
+	public BookmarkManagerTabContent()
 	{
-		super(tabs);
-
-		address = "";
-		title = "Bookmark Manager";
-
 		contextMenu = new ContextMenu();
 
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();
@@ -53,20 +42,19 @@ public class BookmarkManagerTab extends Tab
 		rootNode.add(bookmarksBarBookmarks);
 		rootNode.add(otherBookmarksBookmarks);
 
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-
 		bookmarksTree = new FolderTree(rootNode);
 		bookmarksTree.setSelectionPath(new TreePath(bookmarksBarBookmarks.getPath()));
-		splitPane.setLeftComponent(bookmarksTree);
+		setLeftComponent(new JScrollPane(bookmarksTree));
 
 		bookmarksList = new FolderContents(bookmarksTree.getSelectedFolder());
-		splitPane.setRightComponent(bookmarksList);
+		setRightComponent(new JScrollPane(bookmarksList));
 
-		splitPane.setDividerLocation(200);
+		setDividerLocation(200);
+	}
 
-		JPanel mainArea = getMainArea();
-		mainArea.setLayout(new BorderLayout());
-		mainArea.add(splitPane, BorderLayout.CENTER);
+	public Component getContent()
+	{
+		return this;
 	}
 
 	private class FolderContents extends JTree
@@ -126,7 +114,7 @@ public class BookmarkManagerTab extends Tab
 
 		public void valueChanged(TreeSelectionEvent e)
 		{
-			splitPane.setRightComponent(new JScrollPane(new FolderContents(bookmarksTree.getSelectedFolder())));
+			setRightComponent(new JScrollPane(new FolderContents(bookmarksTree.getSelectedFolder())));
 		}
 	}
 

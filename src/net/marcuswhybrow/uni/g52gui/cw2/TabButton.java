@@ -26,8 +26,9 @@ public class TabButton extends JPanel
 {
 	/** The tab which this button should close */
 	private Tab tab;
+	private JLabel label;
 
-	public TabButton(Tab tab)
+	public TabButton(Tab tab, String title)
 	{
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
@@ -35,7 +36,7 @@ public class TabButton extends JPanel
         setOpaque(false);
 
         //make JLabel read titles from JTabbedPane
-        JLabel label = new TabTitle(tab);
+        label = new JLabel(title);
 		add(label);
 
 		//add more space between the label and the button
@@ -48,22 +49,14 @@ public class TabButton extends JPanel
 		setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 	}
 
-	private class TabTitle extends JLabel
+	public void setTab(Tab tab)
 	{
-		private Tab tab;
+		this.tab = tab;
+	}
 
-		public TabTitle(Tab tab)
-		{
-			this.tab = tab;
-		}
-		
-		@Override
-		public String getText()
-		{
-			if (tab != null)
-				return tab.getTitle();
-			return null;
-		}
+	public void setTitle(String title)
+	{
+		label.setText(title);
 	}
 
 	private class CloseTabButton extends JButton implements ActionListener, MouseListener
