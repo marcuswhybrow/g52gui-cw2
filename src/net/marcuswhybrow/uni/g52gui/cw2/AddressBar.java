@@ -11,14 +11,14 @@ import javax.swing.JTextField;
 public class AddressBar extends JTextField implements ActionListener
 {
 	/** The window this address bar belongs to */
-	private Window window;
+	private Tab tab;
 
-	public AddressBar(Window window)
+	public AddressBar(Tab tab)
 	{
 		super();
 		addActionListener(this);
 
-		this.window = window;
+		this.tab = tab;
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -30,7 +30,7 @@ public class AddressBar extends JTextField implements ActionListener
 			address = "http://".concat(address);
 			setText(address);
 		}
-    	window.goTo(address);
+    	tab.goTo(address);
 	}
 
 	public void updateAddress(String address)

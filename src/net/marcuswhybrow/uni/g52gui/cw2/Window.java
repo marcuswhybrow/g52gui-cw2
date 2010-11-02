@@ -13,17 +13,13 @@ import javax.swing.JFrame;
 public class Window extends JFrame implements WindowListener, Reopenable
 {
 	private Tabs tabs = new Tabs(this);
-	private AddressBar addressBar = new AddressBar(this);
 	
 	public Window()
 	{
 		Container pane = this.getContentPane();
 		pane.setLayout(new BorderLayout());
 		
-		pane.add(addressBar, BorderLayout.NORTH);
 		pane.add(tabs, BorderLayout.CENTER);
-
-		activeTabHasChanged();
 
 		setTitle("Window");
 		pack();
@@ -36,11 +32,6 @@ public class Window extends JFrame implements WindowListener, Reopenable
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addWindowListener(this);
-	}
-
-	public AddressBar getAddressBar()
-	{
-		return addressBar;
 	}
 
 	public void goTo(String url)
@@ -57,14 +48,6 @@ public class Window extends JFrame implements WindowListener, Reopenable
 	{
 		return tabs;
 	}
-
-	public void activeTabHasChanged()
-	{
-		Tab activeTab = tabs.getActiveTab();
-		if (activeTab != null)
-			addressBar.updateAddress(activeTab.getAddress());
-	}
-
 
 	public void windowOpened(WindowEvent e)
 	{

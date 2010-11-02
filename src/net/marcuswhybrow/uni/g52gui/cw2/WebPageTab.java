@@ -2,6 +2,7 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.awt.BorderLayout;
 import java.net.MalformedURLException;
+import javax.swing.JPanel;
 import org.lobobrowser.gui.FramePanel;
 
 /**
@@ -21,18 +22,14 @@ public class WebPageTab extends Tab //implements HyperlinkListener
 
 	public WebPageTab(Tabs tabs, String address)
 	{
-		super();
-		this.tabs = tabs;
-
-//		viewPort.setEditable(false);
+		super(tabs);
+		
 		if (address != null)
 			goTo(address);
-//		viewPort.addHyperlinkListener(this);
-//		viewPort.setContentType("text/html;text/css");
 
-		setLayout(new BorderLayout());
-		add(viewPort, BorderLayout.CENTER);
-//		scrollPane.getViewport().add(viewPort);
+		JPanel mainArea = getMainArea();
+		mainArea.setLayout(new BorderLayout());
+		mainArea.add(viewPort, BorderLayout.CENTER);
 	}
 
 	@Override

@@ -263,8 +263,7 @@ public class Browser implements ActionListener
 			else if (e.getActionCommand().equals("Re-open Closed Tab"))
 				openLastClosedItem();
 			else if (e.getActionCommand().equals("Open Location"))
-				activeWindow.getAddressBar().requestFocus();
-
+				activeWindow.getTabs().getActiveTab().getAddressBar().requestFocus();
 			else if (e.getActionCommand().equals("Bookmark Manager"))
 				activeWindow.getTabs().openBookmarkManagerTab();
 		}

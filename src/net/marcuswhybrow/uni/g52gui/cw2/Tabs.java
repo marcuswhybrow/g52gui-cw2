@@ -98,6 +98,5 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	public void stateChanged(ChangeEvent e)
 	{
 		activeTab = (Tab) getSelectedComponent();
-		window.activeTabHasChanged();
 	}
 }

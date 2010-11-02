@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 /**
@@ -12,6 +13,29 @@ public abstract class Tab extends JPanel implements Reopenable
 	protected String title;
 	protected boolean isClosed;
 	protected String address;
+	
+	private JPanel mainArea;
+	private AddressBar addressBar;
+
+	public Tab(Tabs tabs)
+	{
+		this.tabs = tabs;
+		setLayout(new BorderLayout());
+		mainArea = new JPanel();
+		addressBar = new AddressBar(this);
+		add(addressBar, BorderLayout.NORTH);
+		add(mainArea, BorderLayout.CENTER);
+	}
+
+	public JPanel getMainArea()
+	{
+		return mainArea;
+	}
+
+	public AddressBar getAddressBar()
+	{
+		return addressBar;
+	}
 
 	public String getTitle()
 	{
@@ -25,7 +49,7 @@ public abstract class Tab extends JPanel implements Reopenable
 
 	public void goTo(String address)
 	{
-
+		// does nothing by default
 	}
 
 	public void close()

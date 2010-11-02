@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -39,9 +40,7 @@ public class BookmarkManagerTab extends Tab
 
 	public BookmarkManagerTab(Tabs tabs)
 	{
-		super();
-
-		this.tabs = tabs;
+		super(tabs);
 
 		address = "";
 		title = "Bookmark Manager";
@@ -64,9 +63,10 @@ public class BookmarkManagerTab extends Tab
 		splitPane.setRightComponent(bookmarksList);
 
 		splitPane.setDividerLocation(200);
-		
-		setLayout(new BorderLayout());
-		add(splitPane, BorderLayout.CENTER);
+
+		JPanel mainArea = getMainArea();
+		mainArea.setLayout(new BorderLayout());
+		mainArea.add(splitPane, BorderLayout.CENTER);
 	}
 
 	private class FolderContents extends JTree
