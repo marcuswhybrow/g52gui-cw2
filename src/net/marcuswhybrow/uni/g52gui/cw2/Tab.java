@@ -122,4 +122,9 @@ public class Tab extends JPanel implements Reopenable
 	{
 		return isClosed;
 	}
+
+	public String toString()
+	{
+		return title + (isClosed ? " is closed" : " is open");
+	}
 }

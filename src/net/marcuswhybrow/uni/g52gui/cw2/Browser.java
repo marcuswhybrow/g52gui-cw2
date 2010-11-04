@@ -228,6 +228,7 @@ public class Browser implements ActionListener
 
 	public void addClosedItem(Reopenable item)
 	{
+		System.out.println("Closing item: " + item.toString());
 		closedItems.push(item);
 	}
 
@@ -240,6 +241,7 @@ public class Browser implements ActionListener
 			item = closedItems.pop();
 			if (item.isClosed())
 			{
+				System.out.println("Opening item: " + item.toString());
 				item.reopen();
 				break;
 			}
@@ -259,7 +261,7 @@ public class Browser implements ActionListener
 			else if (e.getActionCommand().equals("Close Window"))
 				activeWindow.close();
 			else if (e.getActionCommand().equals("Close Tab"))
-				activeWindow.getTabs().getActiveTab().close();
+				activeWindow.getTabs().getActiveTab().close(); 
 			else if (e.getActionCommand().equals("Re-open Closed Tab"))
 				openLastClosedItem();
 			else if (e.getActionCommand().equals("Open Location"))

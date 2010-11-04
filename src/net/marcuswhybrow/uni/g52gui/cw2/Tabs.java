@@ -22,7 +22,7 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	{
 		this.window = window;
 		tabs = new ArrayList<Tab>();
-		openWebPageTab("http://google.com");
+		openWebPageTab();
 
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		addChangeListener(this);
@@ -30,14 +30,15 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void openWebPageTab()
 	{
-		openWebPageTab("");
+		openWebPageTab(null);
 	}
 
 	public void openWebPageTab(String url)
 	{
 		Tab tab = new Tab(this, new WebPageTabContent());
 		openGenericTab(tab);
-		tab.goTo(url);
+		if (url != null)
+			tab.goTo(url);
 	}
 
 
@@ -50,6 +51,10 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	public void openGenericTab(Tab tab)
 	{
 		tabs.add(tab);
+
+		addTab(null, tab);
+		setTabComponentAt(indexOfComponent(tab), new TabButton(tab, tab.title));
+
 		setActiveTab(tab);
 	}
 
@@ -63,7 +68,14 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void setActiveTab(Tab tab)
 	{
-		setSelectedComponent((Component) tab);
+		try
+		{
+			setSelectedComponent((Component) tab);
+		}
+		catch (IllegalArgumentException e)
+		{
+			System.err.println("Tried to set '" + tab.toString() + "' to the active tab but it didn't exist");
+		}
 		activeTab = tab;
 	}
 
