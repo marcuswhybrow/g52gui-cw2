@@ -127,4 +127,9 @@ public class Tab extends JPanel implements Reopenable
 	{
 		return title + (isClosed ? " is closed" : " is open");
 	}
+
+	public void setTabButton(TabButton tabButton)
+	{
+		this.tabButton = tabButton;
+	}
 }

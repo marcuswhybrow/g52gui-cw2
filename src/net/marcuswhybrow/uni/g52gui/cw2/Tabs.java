@@ -51,9 +51,11 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	public void openGenericTab(Tab tab)
 	{
 		tabs.add(tab);
+		TabButton tabButton = new TabButton(tab, tab.title);
+		tab.setTabButton(tabButton);
 
 		addTab(null, tab);
-		setTabComponentAt(indexOfComponent(tab), new TabButton(tab, tab.title));
+		setTabComponentAt(indexOfComponent(tab), tabButton);
 
 		setActiveTab(tab);
 	}
