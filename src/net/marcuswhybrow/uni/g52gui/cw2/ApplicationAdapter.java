@@ -13,14 +13,15 @@ import javax.swing.JOptionPane;
  */
 public class ApplicationAdapter extends com.apple.eawt.ApplicationAdapter
 {
+
 	/**
-	 * A static method which allows all of the Mac type stuff to remain inside
+	 * A method which allows all of the Mac type stuff to remain inside
 	 * of this class alone and no where else.
 	 */
-	public static void setup()
+	public void setup()
 	{
 		Application macApplication = Application.getApplication();
-		macApplication.addApplicationListener(new ApplicationAdapter());
+		macApplication.addApplicationListener(this);
 		macApplication.setEnabledPreferencesMenu(true);
 		macApplication.setDockIconImage(Browser.get().getIcon());
 	}

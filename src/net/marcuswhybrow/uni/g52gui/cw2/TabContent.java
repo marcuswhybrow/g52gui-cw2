@@ -13,4 +13,6 @@ import java.awt.Component;
  */
 public interface TabContent {
 	public Component getContent();
+
+	public void setTab(Tab tab);
 }

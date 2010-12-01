@@ -24,7 +24,7 @@ public class Tab extends JPanel implements Reopenable
 	{
 		this.tabs = tabs;
 		setLayout(new BorderLayout());
-		this.content = tabContent;
+		this.setTabContent(tabContent);
 		addressBar = new AddressBar(this);
 		add(addressBar, BorderLayout.NORTH);
 		add(tabContent.getContent(), BorderLayout.CENTER);
@@ -51,8 +51,10 @@ public class Tab extends JPanel implements Reopenable
 
 	public void setTabContent(TabContent tabContent)
 	{
-		remove(this.content.getContent());
+		if (this.content != null)
+			remove(this.content.getContent());
 		this.content = tabContent;
+		this.content.setTab(this);
 		add(this.content.getContent(), BorderLayout.CENTER);
 		validate();
 	}
@@ -90,7 +92,6 @@ public class Tab extends JPanel implements Reopenable
 				((WebPageTabContent) content.getContent()).goTo(address);
 
 				title = address.substring(7);
-				updateTabButtonTitle();
 			}
 			else if (address.startsWith("browser://bookmarks"))
 			{
@@ -98,8 +99,8 @@ public class Tab extends JPanel implements Reopenable
 					setTabContent(new BookmarkManagerTabContent());
 				
 				title = "Bookmark Manager";
-				updateTabButtonTitle();
 			}
+//			updateTabButtonTitle();
 		}
 	}
 
@@ -131,5 +132,16 @@ public class Tab extends JPanel implements Reopenable
 	public void setTabButton(TabButton tabButton)
 	{
 		this.tabButton = tabButton;
+	}
+
+	public TabButton getTabButton()
+	{
+		return this.tabButton;
+	}
+
+	public void setTitle(String title)
+	{
+		this.title = title;
+		this.updateTabButtonTitle();
 	}
 }

@@ -74,7 +74,7 @@ public class Browser implements ActionListener
 		// Mac Specific Stuff
 		if (System.getProperty("mrj.version") != null)
 		{
-//			ApplicationAdapter.setup();
+//			new ApplicationAdapter().setup();
 		}
 		
 		openWindow();
@@ -301,9 +301,17 @@ public class Browser implements ActionListener
 			System.err.println("Unable to set look and feel");
 		}
 
-		// Set the tree leaf icon in a JTree to be the same as the folder icon
-		UIDefaults def = UIManager.getLookAndFeelDefaults();
-		def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
+		try
+		{
+			// Set the tree leaf icon in a JTree to be the same as the folder icon
+			UIDefaults def = UIManager.getLookAndFeelDefaults();
+			// def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
+			def.put("Tree.closedIcon", def.get("Tree.leafIcon"));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		Browser.get();
 	}

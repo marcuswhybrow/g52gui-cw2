@@ -19,6 +19,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.Tab;
 import net.marcuswhybrow.uni.g52gui.cw2.TabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
 
@@ -31,6 +32,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 	private FolderTree bookmarksTree;
 	private JTree bookmarksList;
 	private ContextMenu contextMenu;
+	private Tab tab;
 
 	public BookmarkManagerTabContent()
 	{
@@ -55,6 +57,11 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 	public Component getContent()
 	{
 		return this;
+	}
+
+	public void setTab(Tab tab)
+	{
+		this.tab = tab;
 	}
 
 	private class FolderContents extends JTree
