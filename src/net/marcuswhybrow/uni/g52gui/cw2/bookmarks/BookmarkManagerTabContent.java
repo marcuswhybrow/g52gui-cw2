@@ -311,6 +311,11 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 		return node;
 	}
 
+	public void home()
+	{
+		// do nothing
+	}
+
 	public void refresh()
 	{
 		// do nothing

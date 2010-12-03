@@ -50,7 +50,7 @@ public class ToolBar extends JToolBar implements ActionListener
 	public void actionPerformed(ActionEvent ae)
 	{
 		if ("home".equals(ae.getActionCommand()))
-			this.tab.goTo("http://google.com");
+			this.tab.home();
 		else if ("refresh".equals(ae.getActionCommand()))
 			this.tab.refresh();
 		else if ("back".equals(ae.getActionCommand()))

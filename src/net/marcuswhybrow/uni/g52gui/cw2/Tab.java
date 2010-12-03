@@ -148,6 +148,11 @@ public class Tab extends JPanel implements Reopenable
 		this.updateTabButtonTitle();
 	}
 
+	public void home()
+	{
+		this.content.home();
+	}
+
 	public void refresh()
 	{
 		this.content.refresh();

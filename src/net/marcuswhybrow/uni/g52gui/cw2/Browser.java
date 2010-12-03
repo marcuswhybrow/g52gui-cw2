@@ -251,25 +251,27 @@ public class Browser implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getActionCommand() != null)
-		{
-			System.out.println(e.getActionCommand());
-			
-			if (e.getActionCommand().equals("New Window"))
-				Browser.get().openWindow();
-			else if (e.getActionCommand().equals("New Tab"))
-				activeWindow.getTabs().openWebPageTab();
-			else if (e.getActionCommand().equals("Close Window"))
-				activeWindow.close();
-			else if (e.getActionCommand().equals("Close Tab"))
-				activeWindow.getTabs().getActiveTab().close(); 
-			else if (e.getActionCommand().equals("Re-open Closed Tab"))
-				openLastClosedItem();
-			else if (e.getActionCommand().equals("Open Location"))
-				activeWindow.getTabs().getActiveTab().getAddressBar().requestFocus();
-			else if (e.getActionCommand().equals("Bookmark Manager"))
-				activeWindow.getTabs().openBookmarkManagerTab();
-		}
+		if ("New Window".equals(e.getActionCommand()))
+			Browser.get().openWindow();
+		else if ("New Tab".equals(e.getActionCommand()))
+			activeWindow.getTabs().openWebPageTab();
+		else if ("Close Window".equals(e.getActionCommand()))
+			activeWindow.close();
+		else if ("Close Tab".equals(e.getActionCommand()))
+			activeWindow.getTabs().getActiveTab().close();
+		else if ("Re-open Closed Tab".equals(e.getActionCommand()))
+			openLastClosedItem();
+		else if ("Open Location".equals(e.getActionCommand()))
+			activeWindow.getTabs().getActiveTab().getAddressBar().requestFocus();
+		else if ("Bookmark Manager".equals(e.getActionCommand()))
+			activeWindow.getTabs().openBookmarkManagerTab();
+
+		else if ("Home".equals(e.getActionCommand()))
+			activeWindow.getTabs().getActiveTab().home();
+		else if ("Back".equals(e.getActionCommand()))
+			activeWindow.getTabs().getActiveTab().back();
+		else if ("Forward".equals(e.getActionCommand()))
+			activeWindow.getTabs().getActiveTab().forward();
 	}
 
 	public void showPreferences()

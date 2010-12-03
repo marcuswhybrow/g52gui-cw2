@@ -186,6 +186,11 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		}
 	}
 
+	public void home()
+	{
+		this.goTo("http://google.com");
+	}
+
 	public void refresh()
 	{
 		this.moveToPointInHistory(this.currentLocation);
