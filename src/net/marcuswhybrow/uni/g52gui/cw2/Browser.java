@@ -338,8 +338,8 @@ public class Browser implements ActionListener
 		{
 			// Set the tree leaf icon in a JTree to be the same as the folder icon
 			UIDefaults def = UIManager.getLookAndFeelDefaults();
-			// def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
-			def.put("Tree.closedIcon", def.get("Tree.leafIcon"));
+			def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
+//			def.put("Tree.closedIcon", def.get("Tree.leafIcon"));
 		}
 		catch (Exception e)
 		{
