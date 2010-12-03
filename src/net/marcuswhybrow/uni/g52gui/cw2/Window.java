@@ -2,6 +2,7 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
@@ -28,13 +29,24 @@ public class Window extends JFrame implements WindowListener, Reopenable
 
 		setJMenuBar(new MenuBar(this));
 
-		setVisible(true);
-
 //		setLayout(new BorderLayout());
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addWindowListener(this);
 		this.setSize(300, 200);
+
+		Window window = Browser.get().getActiveWindow();
+
+		if (window != null)
+		{
+			this.setLocationRelativeTo(Browser.get().getActiveWindow());
+			Point location = this.getLocation();
+			this.setLocation(new Point(location.x + 10, location.y + 10));
+		}
+		else
+			this.setLocationRelativeTo(null);
+
+		this.setVisible(true);
 	}
 
 	public void goTo(String url)

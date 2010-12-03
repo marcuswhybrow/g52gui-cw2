@@ -1,6 +1,5 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,7 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  *
@@ -51,6 +49,8 @@ public class Settings extends JFrame implements WindowListener
 		this.setMinimumSize(new Dimension(300, 100));
 		this.pack();
 		this.setResizable(false);
+
+		this.setLocationRelativeTo(null);
 	}
 
 	public static Settings get()
