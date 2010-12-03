@@ -13,12 +13,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Marcus Whybrow
  */
-public class Settings extends JFrame implements WindowListener
+public class Settings extends JFrame implements WindowListener, Frame
 {
 	private static Settings settings;
 
@@ -63,12 +64,12 @@ public class Settings extends JFrame implements WindowListener
 		return settings;
 	}
 
-	public void showPreferences()
+	public void showSettings()
 	{
 		this.setVisible(true);
 	}
 
-	public void hidePreferences()
+	public void hideSettings()
 	{
 		this.setVisible(false);
 	}
@@ -141,12 +142,17 @@ public class Settings extends JFrame implements WindowListener
 
 	public void windowActivated(WindowEvent we)
 	{
-		//
+		Browser.get().setActiveFrame(this);
 	}
 
 	public void windowDeactivated(WindowEvent we)
 	{
 		//
+	}
+
+	public void close()
+	{
+		this.hideSettings();
 	}
 
 	private class Section extends JPanel
@@ -190,7 +196,7 @@ public class Settings extends JFrame implements WindowListener
 
 	private class HomePageSection extends Section
 	{
-		private JTextArea homePageTextArea = new JTextArea(Settings.get().getHomePage());
+		private JTextField homePageTextArea = new JTextField(Settings.get().getHomePage());
 
 		public HomePageSection()
 		{

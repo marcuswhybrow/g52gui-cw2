@@ -11,7 +11,7 @@ import javax.swing.JFrame;
  *
  * @author Marcus Whybrow
  */
-public class Window extends JFrame implements WindowListener, Reopenable
+public class Window extends JFrame implements WindowListener, Reopenable, Frame
 {
 	private Tabs tabs = new Tabs(this);
 	private StatusBar statusBar = new StatusBar(this);
@@ -27,7 +27,7 @@ public class Window extends JFrame implements WindowListener, Reopenable
 		setTitle("Window");
 		pack();
 
-		setJMenuBar(new MenuBar(this));
+		setJMenuBar(new MenuBar());
 
 //		setLayout(new BorderLayout());
 
@@ -91,7 +91,7 @@ public class Window extends JFrame implements WindowListener, Reopenable
 
 	public void windowActivated(WindowEvent e)
 	{
-		Browser.get().setActiveWindow(this);
+		Browser.get().setActiveFrame(this);
 	}
 
 	public void windowDeactivated(WindowEvent e)

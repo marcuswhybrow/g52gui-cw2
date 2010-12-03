@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,6 +38,8 @@ public class Browser implements ActionListener
 
 	private ArrayList<Window> windows = new ArrayList<Window>();
 	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
+
+	private Frame activeFrame = null;
 	private Window activeWindow = null;
 
 	private Folder bookmarksBar;
@@ -80,10 +83,11 @@ public class Browser implements ActionListener
 	{
 		com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
 		app.setDockIconImage(this.getIcon());
+		app.setDefaultMenuBar(new MenuBar());
 		app.setPreferencesHandler(new PreferencesHandler() {
 			public void handlePreferences(PreferencesEvent pe)
 			{
-				Settings.get().showPreferences();
+				Settings.get().showSettings();
 			}
 		});
 	}
@@ -226,12 +230,14 @@ public class Browser implements ActionListener
 	{
 		Window window = new Window();
 		windows.add(window);
-		setActiveWindow(window);
+		setActiveFrame(window);
 	}
 
-	public void setActiveWindow(Window window)
+	public void setActiveFrame(Frame frame)
 	{
-		activeWindow = window;
+		activeFrame = frame;
+		if (frame instanceof Window)
+			activeWindow = (Window) frame;
 	}
 
 	public void windowHasClosed(Window window)
@@ -278,26 +284,28 @@ public class Browser implements ActionListener
 
 	public void actionPerformed(ActionEvent e)
 	{
+		System.out.println(e.getActionCommand());
+		
 		if ("New Window".equals(e.getActionCommand()))
 			Browser.get().openWindow();
 		else if ("New Tab".equals(e.getActionCommand()))
 			activeWindow.getTabs().openWebPageTab();
-		else if ("Close Window".equals(e.getActionCommand()))
-			activeWindow.close();
-		else if ("Close Tab".equals(e.getActionCommand()))
+		else if ("Close Window".equals(e.getActionCommand()) && activeFrame != null)
+			activeFrame.close();
+		else if ("Close Tab".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().close();
 		else if ("Re-open Closed Tab".equals(e.getActionCommand()))
 			openLastClosedItem();
-		else if ("Open Location".equals(e.getActionCommand()))
+		else if ("Open Location".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().getAddressBar().requestFocus();
-		else if ("Bookmark Manager".equals(e.getActionCommand()))
+		else if ("Bookmark Manager".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().openBookmarkManagerTab();
 
-		else if ("Home".equals(e.getActionCommand()))
+		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
-		else if ("Back".equals(e.getActionCommand()))
+		else if ("Back".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().back();
-		else if ("Forward".equals(e.getActionCommand()))
+		else if ("Forward".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().forward();
 	}
 
@@ -309,11 +317,6 @@ public class Browser implements ActionListener
 	public Image getIcon()
 	{
 		return icon;
-	}
-
-	public Window getActiveWindow()
-	{
-		return activeWindow;
 	}
 
 	public static void main(String[] args)
@@ -349,5 +352,15 @@ public class Browser implements ActionListener
 	public OperatingSystem getOperatingSystem()
 	{
 		return this.os;
+	}
+
+	public Window getActiveWindow()
+	{
+		return this.activeWindow;
+	}
+
+	public Frame getActiveFrame()
+	{
+		return this.activeFrame;
 	}
 }

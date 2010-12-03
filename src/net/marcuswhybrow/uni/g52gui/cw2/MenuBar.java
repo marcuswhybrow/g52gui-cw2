@@ -14,7 +14,7 @@ import javax.swing.KeyStroke;
 public class MenuBar extends JMenuBar
 {
 
-	public MenuBar(Window window)
+	public MenuBar()
 	{
 		super();
 		Menu menu = new Menu("File");
