@@ -1,7 +1,7 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
+import com.apple.eawt.AppEvent.PreferencesEvent;
+import com.apple.eawt.PreferencesHandler;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +22,6 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
-import org.lobobrowser.main.PlatformInit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -43,27 +42,30 @@ public class Browser implements ActionListener
 	private Folder bookmarksBar;
 	private Folder otherBookmarks;
 
-	private Preferences preferences;
+	private Settings preferences;
 
 	private Image icon;
 
+	public enum OperatingSystem {WINDOWS, MAC, LINUX_OR_UNIX, OTHER};
+	private OperatingSystem os;
+
 	private Browser() {}
 
-	private void setup()
+	private void determineOperatingSystem()
 	{
-		try
-		{
-			// Initialise logging such that only warnings are printed out
-			PlatformInit.getInstance().initLogging(false);
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.indexOf("win") >= 0)
+			this.os = OperatingSystem.WINDOWS;
+		else if (osName.indexOf("mac") >= 0)
+			this.os = OperatingSystem.MAC;
+		else if (osName.indexOf("nix") >= 0 || osName.indexOf("nux") >= 0)
+			this.os = OperatingSystem.LINUX_OR_UNIX;
+		else
+			this.os = OperatingSystem.OTHER;
+	}
 
-			// Required for extentions to work
-			PlatformInit.getInstance().init(false, false);
-		}
-		catch (Exception ex)
-		{
-			System.err.println("Something when wrong with Lobo");
-		}
-
+	private void determineIcon()
+	{
 		try
 		{
 			icon = ImageIO.read(getClass().getClassLoader().getResource("assets/icon.png"));
@@ -72,24 +74,49 @@ public class Browser implements ActionListener
 		{
 			System.err.println("Couldn't find the Browser icon image");
 		}
+	}
 
-		// Mac Specific Stuff
-		if (System.getProperty("mrj.version") != null)
+	private void doMacSpecificSetup()
+	{
+		com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+		app.setDockIconImage(this.getIcon());
+		app.setPreferencesHandler(new PreferencesHandler() {
+			public void handlePreferences(PreferencesEvent pe)
+			{
+				Settings.get().showPreferences();
+			}
+		});
+	}
+
+	private void setup()
+	{
+		this.determineOperatingSystem();
+		this.determineIcon();
+
+		switch (os)
 		{
-//			new ApplicationAdapter().setup();
+			case MAC:
+				this.doMacSpecificSetup();
+				break;
+			case WINDOWS:
+				break;
+			case LINUX_OR_UNIX:
+				break;
+			case OTHER:
+				break;
 		}
 		
-		openWindow();
+		this.openWindow();
 
-		preferences = new Preferences();
+		this.preferences = Settings.get();
 
-		bookmarksBar = readFromFile("bookmarks_bar.xml");
-		otherBookmarks = readFromFile("other_bookmarks.xml");
+		this.bookmarksBar = readFromFile("bookmarks_bar.xml");
+		this.otherBookmarks = readFromFile("other_bookmarks.xml");
 
-		if (bookmarksBar == null)
-			bookmarksBar = new RootFolder("Bookmarks Bar");
-		if (otherBookmarks == null)
-			otherBookmarks = new RootFolder("Other Bookmarks");
+		if (this.bookmarksBar == null)
+			this.bookmarksBar = new RootFolder("Bookmarks Bar");
+		if (this.otherBookmarks == null)
+			this.otherBookmarks = new RootFolder("Other Bookmarks");
 	}
 
 	public Folder getBookmarksBarBookmarks()
@@ -317,5 +344,10 @@ public class Browser implements ActionListener
 		}
 
 		Browser.get();
+	}
+
+	public OperatingSystem getOperatingSystem()
+	{
+		return this.os;
 	}
 }

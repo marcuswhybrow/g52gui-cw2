@@ -36,6 +36,13 @@ public class MenuBar extends JMenuBar
 		menu.addMenuItem("Copy", KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.addMenuItem("Copy URL", KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.addMenuItem("Past", KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+
+		if (Browser.get().getOperatingSystem() != Browser.OperatingSystem.MAC)
+		{
+			menu.addSeparator();
+			menu.addMenuItem("Preferences");
+		}
+
 		add(menu);
 
 		menu = new Menu("View");
