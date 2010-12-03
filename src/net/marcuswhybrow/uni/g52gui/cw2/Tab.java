@@ -167,4 +167,9 @@ public class Tab extends JPanel implements Reopenable
 	{
 		return this.toolBar;
 	}
+
+	public Window getWindow()
+	{
+		return this.tabs.getWindow();
+	}
 }

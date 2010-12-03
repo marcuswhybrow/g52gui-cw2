@@ -21,10 +21,10 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 public class WebPageTabContent extends JScrollPane implements TabContent, HyperlinkListener, PropertyChangeListener
 {
-	private JEditorPane pane = new JEditorPane();
+	private JEditorPane pane = new EditorPane();
 	private Tab tab;
 
-	public static enum State {EMPTY, LOADING, DONE};
+	public static enum State {EMPTY, WAITING, LOADING, DONE};
 	private State state = State.EMPTY;
 
 	private ArrayList<URL> history = new ArrayList<URL>();
@@ -56,16 +56,17 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		}
 		else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED)
 		{
-			//
+			this.getWindow().getStatusBar().setText(e.getURL().toString());
 		}
 		else if (e.getEventType() == HyperlinkEvent.EventType.EXITED)
 		{
-			//
+			this.getWindow().getStatusBar().clear();
 		}
 	}
 
 	public void propertyChange(PropertyChangeEvent pce)
 	{
+		System.out.println(pce.getPropertyName());
 		if ("document".equals(pce.getPropertyName()))
 			this.setState(WebPageTabContent.State.LOADING);
 		else if ("page".equals(pce.getPropertyName()))
@@ -82,7 +83,7 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 	{
 		this.removeFutureLocationsFromHistory();
 		this.history.add(location);
-		this.currentLocation = history.indexOf(location);
+		this.currentLocation = history.size() - 1;
 
 		try
 		{
@@ -97,8 +98,6 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		{
 			System.err.println("Malformed URL: " + location.toString());
 		}
-
-		System.out.println(this.history);
 	}
 
 	public void goTo(String address)
@@ -113,29 +112,16 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		}
 	}
 
-	private void refreshHTMLPane() throws IOException
-	{
-		Document doc = this.pane.getDocument();
-		doc.putProperty(Document.StreamDescriptionProperty, null);
-
-		this.pane.setPage(this.history.get(this.currentLocation));
-	}
-
 	public void moveToPointInHistory(int index)
 	{
 		if (index >= 0 && index < this.history.size())
 		{
 			try
 			{
-				if (this.currentLocation == index)
-					this.refreshHTMLPane();
-				else
-				{
-					this.currentLocation = index;
-					URL location = history.get(index);
-					this.pane.setPage(location);
-					this.tab.getToolBar().getAddressBar().setText(location.toString());
-				}
+				this.currentLocation = index;
+				URL location = history.get(index);
+				this.pane.setPage(location);
+				this.tab.getToolBar().getAddressBar().setText(location.toString());
 			}
 			catch (IOException ex)
 			{
@@ -186,11 +172,15 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		{
 			case EMPTY:
 				break;
+			case WAITING:
+				this.getWindow().getStatusBar().setImportantText("Waiting for " + this.history.get(this.currentLocation).getHost());
+				break;
 			case LOADING:
+				this.getWindow().getStatusBar().setImportantText("Transfering data from " + this.history.get(this.currentLocation).getHost());
 				this.tab.setTitle("loading ...");
 				break;
 			case DONE:
-				System.out.println("done");
+				this.getWindow().getStatusBar().doneWithImportantText();
 				this.tab.setTitle(this.getWebPageTitle());
 				break;
 		}
@@ -198,22 +188,37 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 
 	public void refresh()
 	{
-		System.out.println(this.currentLocation);
 		this.moveToPointInHistory(this.currentLocation);
-		System.out.println(this.currentLocation);
 	}
 
 	public void back()
 	{
-		System.out.println(this.currentLocation);
 		this.moveToPointInHistory(this.currentLocation - 1);
-		System.out.println(this.currentLocation);
 	}
 
 	public void forward()
 	{
-		System.out.println(this.currentLocation);
 		this.moveToPointInHistory(this.currentLocation + 1);
-		System.out.println(this.currentLocation);
+	}
+
+	public Window getWindow()
+	{
+		return this.tab.getWindow();
+	}
+
+	private class EditorPane extends JEditorPane
+	{
+		private void allowCurrentPageToRefresh() throws IOException
+		{
+			this.getDocument().putProperty(Document.StreamDescriptionProperty, null);
+		}
+
+		@Override
+		public void setPage(URL url) throws IOException
+		{
+			setState(State.WAITING);
+			this.allowCurrentPageToRefresh();
+			super.setPage(url);
+		}
 	}
 }

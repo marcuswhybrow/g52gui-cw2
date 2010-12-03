@@ -1,5 +1,7 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -228,7 +230,6 @@ public class Browser implements ActionListener
 
 	public void addClosedItem(Reopenable item)
 	{
-		System.out.println("Closing item: " + item.toString());
 		closedItems.push(item);
 	}
 

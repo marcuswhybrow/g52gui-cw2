@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 public class Window extends JFrame implements WindowListener, Reopenable
 {
 	private Tabs tabs = new Tabs(this);
+	private StatusBar statusBar = new StatusBar(this);
 	
 	public Window()
 	{
@@ -20,6 +21,7 @@ public class Window extends JFrame implements WindowListener, Reopenable
 		pane.setLayout(new BorderLayout());
 		
 		pane.add(tabs, BorderLayout.CENTER);
+		pane.add(statusBar, BorderLayout.SOUTH);
 
 		setTitle("Window");
 		pack();
@@ -32,6 +34,7 @@ public class Window extends JFrame implements WindowListener, Reopenable
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addWindowListener(this);
+		this.setSize(300, 200);
 	}
 
 	public void goTo(String url)
@@ -97,7 +100,6 @@ public class Window extends JFrame implements WindowListener, Reopenable
 	 */
 	public void close(boolean cascadeClose)
 	{
-		System.out.println("closing window");
 		setVisible(false);
 		if (cascadeClose)
 			Browser.get().windowHasClosed(this, false /* Don't put window on the closed items stack */);
@@ -114,5 +116,10 @@ public class Window extends JFrame implements WindowListener, Reopenable
 	public boolean isClosed()
 	{
 		return !isVisible();
+	}
+
+	public StatusBar getStatusBar()
+	{
+		return this.statusBar;
 	}
 }

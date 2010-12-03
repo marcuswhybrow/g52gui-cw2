@@ -1,7 +1,9 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
