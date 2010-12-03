@@ -17,6 +17,7 @@ public class Tab extends JPanel implements Reopenable
 	
 	private TabContent content;
 	private AddressBar addressBar;
+	private ToolBar toolBar;
 
 	private TabButton tabButton;
 
@@ -25,8 +26,10 @@ public class Tab extends JPanel implements Reopenable
 		this.tabs = tabs;
 		setLayout(new BorderLayout());
 		this.setTabContent(tabContent);
-		addressBar = new AddressBar(this);
-		add(addressBar, BorderLayout.NORTH);
+//		addressBar = new AddressBar(this);
+		toolBar = new ToolBar(this);
+//		add(addressBar, BorderLayout.NORTH);
+		add(toolBar, BorderLayout.NORTH);
 		add(tabContent.getContent(), BorderLayout.CENTER);
 
 		if (tabContent instanceof BookmarkManagerTabContent)
@@ -61,7 +64,8 @@ public class Tab extends JPanel implements Reopenable
 
 	public AddressBar getAddressBar()
 	{
-		return addressBar;
+//		return addressBar;
+		return this.toolBar.getAddressBar();
 	}
 
 	public String getTitle()
@@ -76,13 +80,13 @@ public class Tab extends JPanel implements Reopenable
 
 	public void goTo(String address)
 	{
-		// assumes HTTP
 		if (address != null)
 		{
-			addressBar.updateAddress(address);
+			toolBar.getAddressBar().updateAddress(address);
 
 			// The address bar can change the address (for example add http://)
-			address = addressBar.getText();
+			this.address = toolBar.getAddressBar().getText();
+
 			
 			if (address.startsWith("http://"))
 			{
@@ -100,7 +104,6 @@ public class Tab extends JPanel implements Reopenable
 				
 				title = "Bookmark Manager";
 			}
-//			updateTabButtonTitle();
 		}
 	}
 
@@ -143,5 +146,25 @@ public class Tab extends JPanel implements Reopenable
 	{
 		this.title = title;
 		this.updateTabButtonTitle();
+	}
+
+	public void refresh()
+	{
+		this.content.refresh();
+	}
+
+	public void back()
+	{
+		this.content.back();
+	}
+
+	public void forward()
+	{
+		this.content.forward();
+	}
+
+	public ToolBar getToolBar()
+	{
+		return this.toolBar;
 	}
 }
