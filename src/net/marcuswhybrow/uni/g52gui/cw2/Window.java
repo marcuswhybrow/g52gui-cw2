@@ -33,7 +33,7 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		addWindowListener(this);
-		this.setSize(300, 200);
+		this.setSize(800, 600);
 
 		Window window = Browser.get().getActiveWindow();
 
