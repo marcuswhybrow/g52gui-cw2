@@ -307,6 +307,11 @@ public class Browser implements ActionListener
 			activeWindow.getTabs().getActiveTab().back();
 		else if ("Forward".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().forward();
+
+		else if ("Select Next Tab".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.getTabs().selectNextTab();
+		else if ("Select Previous Tab".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.getTabs().selectPreviousTab();
 	}
 
 	public void showPreferences()
