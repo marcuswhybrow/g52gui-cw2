@@ -66,7 +66,6 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 
 	public void propertyChange(PropertyChangeEvent pce)
 	{
-		System.out.println(pce.getPropertyName());
 		if ("document".equals(pce.getPropertyName()))
 			this.setState(WebPageTabContent.State.LOADING);
 		else if ("page".equals(pce.getPropertyName()))

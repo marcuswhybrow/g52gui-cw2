@@ -1,11 +1,17 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 
 /**
  *
@@ -94,7 +100,15 @@ public class MenuBar extends JMenuBar
 		menu.addSeparator();
 		// bookmarks bar bookmarks go here
 		menu.addSeparator();
-		menu.add(new Menu("Other Bookmarks"));
+
+		Menu otherBookmarks = new Menu("Other Bookmarks");
+
+		Folder f = Browser.get().getOtherBookmarksBookmarks();
+//		System.out.println(f);
+		for (BookmarkItem item : f.getChildren())
+			addItem(otherBookmarks, item);
+		menu.add(otherBookmarks);
+		
 		add(menu);
 
 		menu = new Menu("Window");
@@ -105,5 +119,30 @@ public class MenuBar extends JMenuBar
 		menu.addSeparator();
 		// list of available windows
 		add(menu);
+	}
+
+	private void addItem(Menu menu, BookmarkItem item)
+	{
+		if (item instanceof Folder)
+		{
+			Folder folder = (Folder) item;
+			Menu newMenu = new Menu(folder.getName());
+			menu.add(newMenu);
+			BookmarkItem[] children = folder.getChildren();
+			if (children.length > 0)
+				for (BookmarkItem newItem : children)
+					addItem(newMenu, newItem);
+			else
+			{
+				JMenuItem empty = new JMenuItem("Empty");
+				empty.setEnabled(false);
+				newMenu.add(empty);
+			}
+		}
+		else
+		{
+			System.out.println("Create BookmarkMenuItem: " + ((Bookmark) item).getTitle());
+			menu.add(new BookmarkMenuItem((Bookmark) item));
+		}
 	}
 }

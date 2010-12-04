@@ -15,6 +15,7 @@ import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -71,6 +72,10 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			super(convertToNode(folder, false /* don't exlude things which arn't folders */, 1 /* Only 1 level of items */));
 			setRootVisible(false);
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+			DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+//			renderer.setLeafIcon(null);
+			this.setCellRenderer(renderer);
 		}
 	}
 
@@ -272,8 +277,8 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 				}
 				else if (actionCommand.equals("Add Page..."))
 				{
-//					Bookmark bookmark = new Bookmark()
-//					folder.addChild(folder);
+					String url = JOptionPane.showInputDialog("URL");
+					Bookmark bookmark = new Bookmark(url, url, folder);
 				}
 			}
 		}
@@ -283,6 +288,11 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 	private DefaultMutableTreeNode convertToNode(Folder folder)
 	{
 		return convertToNode(folder, true, -1);
+	}
+
+	private DefaultMutableTreeNode convertToNode(Bookmark bookmark)
+	{
+		return new DefaultMutableTreeNode(bookmark);
 	}
 
 	private DefaultMutableTreeNode convertToNode(Folder folder, boolean excludeFiles, int depth)
@@ -299,13 +309,11 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 		{
 			for (BookmarkItem child : folder.getChildren())
 			{
-				if (excludeFiles)
-				{
-					if (child instanceof Folder)
-						node.add(convertToNode((Folder) child, excludeFiles, --depth));
-				}
-				else
-					node.add(convertToNode((Folder) child));
+				if (! excludeFiles && child instanceof Bookmark)
+					node.add(convertToNode((Bookmark) child));
+
+				if (child instanceof Folder)
+					node.add(convertToNode((Folder) child, excludeFiles, --depth));
 			}
 		}
 		return node;

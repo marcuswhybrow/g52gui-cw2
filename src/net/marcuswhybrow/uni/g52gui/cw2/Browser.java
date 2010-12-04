@@ -97,6 +97,14 @@ public class Browser implements ActionListener
 		this.determineOperatingSystem();
 		this.determineIcon();
 
+		this.bookmarksBar = readFromFile("bookmarks_bar.xml");
+		this.otherBookmarks = readFromFile("other_bookmarks.xml");
+
+		if (this.bookmarksBar == null)
+			this.bookmarksBar = new RootFolder("Bookmarks Bar");
+		if (this.otherBookmarks == null)
+			this.otherBookmarks = new RootFolder("Other Bookmarks");
+
 		switch (os)
 		{
 			case MAC:
@@ -113,14 +121,6 @@ public class Browser implements ActionListener
 		this.openWindow();
 
 		this.preferences = Settings.get();
-
-		this.bookmarksBar = readFromFile("bookmarks_bar.xml");
-		this.otherBookmarks = readFromFile("other_bookmarks.xml");
-
-		if (this.bookmarksBar == null)
-			this.bookmarksBar = new RootFolder("Bookmarks Bar");
-		if (this.otherBookmarks == null)
-			this.otherBookmarks = new RootFolder("Other Bookmarks");
 	}
 
 	public Folder getBookmarksBarBookmarks()
@@ -339,7 +339,6 @@ public class Browser implements ActionListener
 			// Set the tree leaf icon in a JTree to be the same as the folder icon
 			UIDefaults def = UIManager.getLookAndFeelDefaults();
 			def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
-//			def.put("Tree.closedIcon", def.get("Tree.leafIcon"));
 		}
 		catch (Exception e)
 		{

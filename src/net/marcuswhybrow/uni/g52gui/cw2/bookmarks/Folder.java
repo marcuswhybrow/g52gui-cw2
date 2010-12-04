@@ -17,6 +17,7 @@ public class Folder implements BookmarkItem
 	protected boolean root = false;
 
 	private static String rootFolderName = "bookmarks";
+	private ArrayList<FolderChangeListener> listeners;
 
 	public Folder()
 	{
@@ -34,6 +35,8 @@ public class Folder implements BookmarkItem
 
 		if (parent != null)
 			parent.addChild(this);
+
+		this.listeners = new ArrayList<FolderChangeListener>();
 	}
 
 	public void setParent(Folder folder)
@@ -130,5 +133,24 @@ public class Folder implements BookmarkItem
 		{
 			super();
 		}
+	}
+
+	public void hasChanged()
+	{
+		if (this.parent != null)
+			this.parent.hasChanged();
+
+		for (FolderChangeListener fcl : listeners)
+			fcl.notifyFolderHasChanged(this);
+	}
+
+	public void addFolderChangeListener(FolderChangeListener fcl)
+	{
+		listeners.add(fcl);
+	}
+
+	public void removeFolderChangeListener(FolderChangeListener fcl)
+	{
+		listeners.remove(fcl);
 	}
 }
