@@ -1,6 +1,7 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import javax.swing.JPanel;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
@@ -26,7 +27,7 @@ public class Tab extends JPanel implements Reopenable
 
 	private TabButton tabButton;
 
-	public enum TabType {WEB_PAGE, NEW_TAB_PAGE, BOOKMARK_MANAGER_PAGE};
+	public enum TabType {WEB_PAGE, NEW_TAB_PAGE, BOOKMARK_MANAGER_PAGE, HISTORY_PAGE};
 
 	public Tab(Tabs tabs, String address)
 	{
@@ -56,13 +57,17 @@ public class Tab extends JPanel implements Reopenable
 				this.content = new BookmarkManagerTabContent(this);
 				this.title = "Bookmark Manager";
 				break;
+			case HISTORY_PAGE:
+				this.content = new HistoryTabContent(this);
+				this.title = "History";
+				break;
 		}
 		setLayout(new BorderLayout());
 //		addressBar = new AddressBar(this);
 		toolBar = new ToolBar(this);
 //		add(addressBar, BorderLayout.NORTH);
 		add(toolBar, BorderLayout.NORTH);
-		add(this.content.getContent(), BorderLayout.CENTER);
+		add((Component) this.content, BorderLayout.CENTER);
 
 		tabButton = new TabButton(this, title);
 		tabs.addTab(null, this);
@@ -82,10 +87,9 @@ public class Tab extends JPanel implements Reopenable
 	public void setTabContent(TabContent tabContent)
 	{
 		if (this.content != null)
-			remove(this.content.getContent());
+			remove((Component) this.content);
 		this.content = tabContent;
-		this.content.setTab(this);
-		add(this.content.getContent(), BorderLayout.CENTER);
+		add((Component) this.content, BorderLayout.CENTER);
 		validate();
 	}
 
@@ -117,16 +121,16 @@ public class Tab extends JPanel implements Reopenable
 			
 			if (address.startsWith("http://"))
 			{
-				if (! (content.getContent() instanceof WebPageTabContent))
+				if (! (content instanceof WebPageTabContent))
 					setTabContent(new WebPageTabContent(this));
 				
-				((WebPageTabContent) content.getContent()).goTo(address);
+				((WebPageTabContent) content).goTo(address);
 
 				title = address.substring(7);
 			}
 			else if (address.startsWith("browser://bookmarks"))
 			{
-				if (! (content.getContent() instanceof BookmarkManagerTabContent))
+				if (! (content instanceof BookmarkManagerTabContent))
 					setTabContent(new BookmarkManagerTabContent(this));
 				
 				title = "Bookmark Manager";
@@ -142,7 +146,7 @@ public class Tab extends JPanel implements Reopenable
 
 	public void reopen()
 	{
-		tabs.openGenericTab(this);
+		tabs.openTab(this);
 		Window window = tabs.getWindow();
 		if (window.isClosed())
 			window.reopen();

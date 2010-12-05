@@ -305,6 +305,8 @@ public class Browser implements ActionListener
 			activeWindow.getTabs().getActiveTab().back();
 		else if ("Forward".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().forward();
+		else if ("Show Full History".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.getTabs().openHistoryTab();
 
 		else if ("Select Next Tab".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().selectNextTab();

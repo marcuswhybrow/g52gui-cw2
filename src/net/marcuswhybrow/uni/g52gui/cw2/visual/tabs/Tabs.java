@@ -40,12 +40,12 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void openWebPageTab(String url)
 	{
-		openGenericTab(new Tab(this, url));
+		openTab(new Tab(this, url));
 	}
 
 	public void openNewTabTab()
 	{
-		openGenericTab(new Tab(this, TabType.NEW_TAB_PAGE));
+		openTab(new Tab(this, TabType.NEW_TAB_PAGE));
 	}
 
 
@@ -65,10 +65,15 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void openBookmarkManagerTab()
 	{
-		openGenericTab(new Tab(this, TabType.BOOKMARK_MANAGER_PAGE));
+		openTab(new Tab(this, TabType.BOOKMARK_MANAGER_PAGE));
 	}
 
-	public void openGenericTab(Tab tab)
+	public void openHistoryTab()
+	{
+		openTab(new Tab(this, TabType.HISTORY_PAGE));
+	}
+
+	public void openTab(Tab tab)
 	{
 		tabs.add(tab);
 		TabButton tabButton = new TabButton(tab, tab.title);
@@ -84,7 +89,7 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	{
 		TabButton tabButton = (TabButton) getTabComponentAt(indexOfComponent(oldTab));
 		oldTab.close();
-		openGenericTab(newTab);
+		openTab(newTab);
 		tabButton.setTab(newTab);
 	}
 

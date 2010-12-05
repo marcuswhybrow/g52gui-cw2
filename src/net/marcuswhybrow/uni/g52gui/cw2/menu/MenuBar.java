@@ -90,7 +90,7 @@ public class MenuBar extends JMenuBar
 		// recently visited URLs will be listed here
 		menu.addSeparator();
 
-		menu.addMenuItem("Show Full HIstory", KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menu.addMenuItem("Show Full History", KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		add(menu);
 
 		menu = new Menu("Bookmarks");

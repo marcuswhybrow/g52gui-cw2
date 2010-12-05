@@ -15,6 +15,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import net.marcuswhybrow.uni.g52gui.cw2.History;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 
 /**
@@ -221,6 +222,7 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			case DONE:
 				this.getWindow().getStatusBar().doneWithImportantText();
 				this.tab.setTitle(this.getWebPageTitle());
+				History.get().addHistoryEntry(this.getWebPageTitle(), this.pane.getPage());
 				break;
 		}
 	}
