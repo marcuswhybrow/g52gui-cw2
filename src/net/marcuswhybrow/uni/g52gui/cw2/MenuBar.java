@@ -140,9 +140,6 @@ public class MenuBar extends JMenuBar
 			}
 		}
 		else
-		{
-			System.out.println("Create BookmarkMenuItem: " + ((Bookmark) item).getTitle());
 			menu.add(new BookmarkMenuItem((Bookmark) item));
-		}
 	}
 }

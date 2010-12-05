@@ -35,8 +35,9 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 	private ContextMenu contextMenu;
 	private Tab tab;
 
-	public BookmarkManagerTabContent()
+	public BookmarkManagerTabContent(Tab tab)
 	{
+		this.tab = tab;
 		contextMenu = new ContextMenu();
 
 		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode();

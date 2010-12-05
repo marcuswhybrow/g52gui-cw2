@@ -231,6 +231,7 @@ public class Browser implements ActionListener
 		Window window = new Window();
 		windows.add(window);
 		setActiveFrame(window);
+//		window.openNewTab();
 	}
 
 	public void setActiveFrame(Frame frame)
@@ -289,7 +290,7 @@ public class Browser implements ActionListener
 		if ("New Window".equals(e.getActionCommand()))
 			Browser.get().openWindow();
 		else if ("New Tab".equals(e.getActionCommand()))
-			activeWindow.getTabs().openWebPageTab();
+			activeWindow.getTabs().openNewTab();
 		else if ("Close Window".equals(e.getActionCommand()) && activeFrame != null)
 			activeFrame.close();
 		else if ("Close Tab".equals(e.getActionCommand()) && activeWindow != null)

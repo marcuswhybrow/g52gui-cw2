@@ -1,12 +1,11 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
-import javax.swing.BorderFactory;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.Tab.TabType;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**
@@ -24,10 +23,11 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	{
 		this.window = window;
 		tabs = new ArrayList<Tab>();
-		openWebPageTab();
 
 		setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		addChangeListener(this);
+
+		openNewTab();
 	}
 
 	public void openWebPageTab()
@@ -37,17 +37,32 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void openWebPageTab(String url)
 	{
-		Tab tab = new Tab(this, new WebPageTabContent());
-		openGenericTab(tab);
-		if (url != null)
-			tab.goTo(url);
+		openGenericTab(new Tab(this, url));
+	}
+
+	public void openNewTabTab()
+	{
+		openGenericTab(new Tab(this, TabType.NEW_TAB_PAGE));
 	}
 
 
+	public void openNewTab()
+	{
+		switch (Settings.get().getNewTabState())
+		{
+			case USE_HOME_PAGE:
+				openWebPageTab(Settings.get().getHomePage());
+				break;
+			case NOT_SET:
+			case USE_NEW_TAB_PAGE:
+				openNewTabTab();
+				break;
+		}
+	}
+
 	public void openBookmarkManagerTab()
 	{
-		Tab tab = new Tab(this, new BookmarkManagerTabContent());
-		openGenericTab(tab);
+		openGenericTab(new Tab(this, TabType.BOOKMARK_MANAGER_PAGE));
 	}
 
 	public void openGenericTab(Tab tab)
@@ -56,10 +71,10 @@ public class Tabs extends JTabbedPane implements ChangeListener
 		TabButton tabButton = new TabButton(tab, tab.title);
 		tab.setTabButton(tabButton);
 
-		addTab(null, tab);
-		setTabComponentAt(indexOfComponent(tab), tabButton);
+		this.addTab(null, tab);
+		this.setTabComponentAt(indexOfComponent(tab), tabButton);
 
-		setActiveTab(tab);
+		this.setActiveTab(tab);
 	}
 
 	public void replaceTab(Tab oldTab, Tab newTab)

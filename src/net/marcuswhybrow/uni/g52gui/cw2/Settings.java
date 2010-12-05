@@ -3,6 +3,8 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -10,9 +12,11 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import java.util.prefs.Preferences;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 /**
@@ -25,8 +29,10 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 	private Preferences prefs;
 	private JPanel wrapper;
-	private GridLayout wrapperGridLayout;
+	private BoxLayout wrapperBoxLayout;
 	private ArrayList<Section> sections;
+
+	public enum NewTabState {USE_NEW_TAB_PAGE, USE_HOME_PAGE, NOT_SET};
 
 	private Settings() {
 		super("Preferences");
@@ -41,13 +47,14 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 		this.wrapper = new JPanel();
 		this.wrapper.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
-		this.wrapperGridLayout = new GridLayout(1,1);
-		this.wrapper.setLayout(wrapperGridLayout);
+		this.wrapperBoxLayout = new BoxLayout(this.wrapper, BoxLayout.Y_AXIS);
+		this.wrapper.setLayout(wrapperBoxLayout);
 
 		this.addSection(new HomePageSection());
+		this.addSection(new NewTabSection());
 
 		this.add(wrapper);
-		this.setMinimumSize(new Dimension(300, 100));
+		this.setMinimumSize(new Dimension(300, 0));
 		this.pack();
 		this.setResizable(false);
 
@@ -78,14 +85,14 @@ public class Settings extends JFrame implements WindowListener, Frame
 	{
 		this.sections.add(section);
 		this.wrapper.add(section);
-		this.updateGridLayout();
+//		this.updateGridLayout();
 	}
 
 	private void removeSection(Section section)
 	{
 		this.sections.remove(section);
 		this.wrapper.remove(section);
-		this.updateGridLayout();
+//		this.updateGridLayout();
 	}
 
 	private void saveAllSections()
@@ -94,10 +101,10 @@ public class Settings extends JFrame implements WindowListener, Frame
 			section.save();
 	}
 
-	private void updateGridLayout()
-	{
-		this.wrapperGridLayout.setRows(this.sections.size());
-	}
+//	private void updateGridLayout()
+//	{
+//		this.wrapperBoxLayout.setRows(this.sections.size());
+//	}
 
 	
 
@@ -109,6 +116,17 @@ public class Settings extends JFrame implements WindowListener, Frame
 	public void setHomePage(String homePage)
 	{
 		prefs.put("home page", homePage);
+	}
+
+
+	public NewTabState getNewTabState()
+	{
+		return NewTabState.valueOf(prefs.get("new tab state", NewTabState.NOT_SET.name()));
+	}
+
+	public void setNewTabState(NewTabState newTabState)
+	{
+		prefs.put("new tab state", newTabState.name());
 	}
 
 
@@ -173,6 +191,7 @@ public class Settings extends JFrame implements WindowListener, Frame
 			this.wrapper = new JPanel();
 			this.wrapper.setBorder(BorderFactory.createEmptyBorder(5, 20, 0, 0));
 			this.wrapper.setLayout(new GridLayout());
+			this.wrapper.setMinimumSize(new Dimension(300, 0));
 			this.add(this.wrapper);
 		}
 
@@ -208,6 +227,57 @@ public class Settings extends JFrame implements WindowListener, Frame
 		public void save()
 		{
 			Settings.get().setHomePage(homePageTextArea.getText());
+		}
+	}
+
+	private class NewTabSection extends Section
+	{
+		private JPanel wrapper;
+
+		private ButtonGroup group;
+		private JRadioButton useNewTabPage;
+		private JRadioButton useHomePage;
+
+		public NewTabSection()
+		{
+			super("New Tab Page");
+			
+			useNewTabPage = new JRadioButton("Use the New Tab page");
+			useHomePage = new JRadioButton("Use your Home page");
+
+			group = new ButtonGroup();
+			group.add(useNewTabPage);
+			group.add(useHomePage);
+
+//			System.out.println(Settings.get().getNewTabState());
+
+			switch (Settings.get().getNewTabState())
+			{
+				case USE_HOME_PAGE:
+					useHomePage.setSelected(true);
+					break;
+				case USE_NEW_TAB_PAGE:
+					useNewTabPage.setSelected(true);
+					break;
+				case NOT_SET:
+					useNewTabPage.setSelected(true);
+			}
+
+			wrapper = new JPanel();
+			wrapper.setLayout(new GridLayout(2,1));
+			wrapper.add(useNewTabPage);
+			wrapper.add(useHomePage);
+
+			this.setComponent(wrapper);
+		}
+
+		@Override
+		public void save()
+		{
+			if (useNewTabPage.isSelected())
+				Settings.get().setNewTabState(NewTabState.USE_NEW_TAB_PAGE);
+			else if (useHomePage.isSelected())
+				Settings.get().setNewTabState(NewTabState.USE_HOME_PAGE);
 		}
 	}
 }

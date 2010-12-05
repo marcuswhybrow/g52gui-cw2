@@ -21,7 +21,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
  */
 public class WebPageTabContent extends JScrollPane implements TabContent, HyperlinkListener, PropertyChangeListener
 {
-	private JEditorPane pane = new EditorPane();
+	private JEditorPane pane;
 	private Tab tab;
 
 	public static enum State {EMPTY, WAITING, LOADING, DONE};
@@ -30,11 +30,33 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 	private ArrayList<URL> history = new ArrayList<URL>();
 	private int currentLocation;
 
-	public WebPageTabContent()
+	public WebPageTabContent(Tab tab)
 	{
-		pane.setEditable(false);
+		this(tab, null);
+	}
+
+	public WebPageTabContent(Tab tab, String address)
+	{
+		this.tab = tab;
+
+		if (address != null)
+		{
+			try
+			{
+				this.pane = new EditorPane(address);
+			}
+			catch (IOException ioe)
+			{
+				System.err.println(ioe);
+				this.pane = new EditorPane();
+			}
+		}
+		else
+			this.pane = new EditorPane();
+		
+		this.pane.setEditable(false);
 		this.setViewportView(pane);
-		pane.addHyperlinkListener(this);
+		this.pane.addHyperlinkListener(this);
 		this.pane.addPropertyChangeListener(this);
 	}
 
@@ -139,6 +161,17 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		}
 	}
 
+	public URL getCurrentLocation()
+	{
+		try
+		{
+			return this.history.get(this.currentLocation);
+		}
+		catch (IndexOutOfBoundsException e) {}
+
+		return null;
+	}
+
 	public Component getContent()
 	{
 		return this;
@@ -167,15 +200,20 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 	public void setState(State state)
 	{
 		this.state = state;
+		URL l;
 		switch (this.state)
 		{
 			case EMPTY:
 				break;
 			case WAITING:
-				this.getWindow().getStatusBar().setImportantText("Waiting for " + this.history.get(this.currentLocation).getHost());
+				l = this.getCurrentLocation();
+				if (l != null)
+					this.getWindow().getStatusBar().setImportantText("Waiting for " + l.getHost());
 				break;
 			case LOADING:
-				this.getWindow().getStatusBar().setImportantText("Transfering data from " + this.history.get(this.currentLocation).getHost());
+				l = this.getCurrentLocation();
+				if (l != null)
+					this.getWindow().getStatusBar().setImportantText("Transfering data from " + l.getHost());
 				this.tab.setTitle("loading ...");
 				break;
 			case DONE:
@@ -212,9 +250,24 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 
 	private class EditorPane extends JEditorPane
 	{
-		private void allowCurrentPageToRefresh() throws IOException
+		private void allowCurrentPageToRefresh()
 		{
 			this.getDocument().putProperty(Document.StreamDescriptionProperty, null);
+		}
+
+		public EditorPane()
+		{
+			super();
+		}
+
+		public EditorPane(String address) throws IOException
+		{
+			super(address);
+		}
+
+		public EditorPane(URL address) throws IOException
+		{
+			super(address);
 		}
 
 		@Override

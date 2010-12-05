@@ -46,7 +46,10 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 		else
 			this.setLocationRelativeTo(null);
 
+//		this.tabs.openWebPageTab();
 		this.setVisible(true);
+//		this.tabs.getActiveTab().goTo(Settings.get().getHomePage());
+//		this.tabs.openNewTab();
 	}
 
 	public void goTo(String url)
@@ -133,5 +136,10 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 	public StatusBar getStatusBar()
 	{
 		return this.statusBar;
+	}
+
+	public void openNewTab()
+	{
+		this.tabs.openNewTab();
 	}
 }

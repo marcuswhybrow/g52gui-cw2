@@ -61,7 +61,6 @@ public class StatusBar extends JPanel
 	public void setImportantText(String text)
 	{
 		state = State.BUSY;
-		System.out.println("!!!!!!!!!!!!!!!!!! " + text);
 		this.addressInfoLabel.setText(text);
 	}
 

@@ -21,21 +21,43 @@ public class Tab extends JPanel implements Reopenable
 
 	private TabButton tabButton;
 
-	public Tab(Tabs tabs, TabContent tabContent)
+	public enum TabType {WEB_PAGE, NEW_TAB_PAGE, BOOKMARK_MANAGER_PAGE};
+
+	public Tab(Tabs tabs, String address)
+	{
+		this(tabs, TabType.WEB_PAGE, address);
+	}
+
+	public Tab(Tabs tabs, TabType type)
+	{
+		this(tabs, type, null);
+	}
+
+	public Tab(Tabs tabs, TabType type, String address)
 	{
 		this.tabs = tabs;
+		
+		switch (type)
+		{
+			case WEB_PAGE:
+				this.content = new WebPageTabContent(this, address);
+				this.title = "New Tab";
+				break;
+			case NEW_TAB_PAGE:
+				this.content = new NewTabTabContent(this);
+				this.title = "New Tab";
+				break;
+			case BOOKMARK_MANAGER_PAGE:
+				this.content = new BookmarkManagerTabContent(this);
+				this.title = "Bookmark Manager";
+				break;
+		}
 		setLayout(new BorderLayout());
-		this.setTabContent(tabContent);
 //		addressBar = new AddressBar(this);
 		toolBar = new ToolBar(this);
 //		add(addressBar, BorderLayout.NORTH);
 		add(toolBar, BorderLayout.NORTH);
-		add(tabContent.getContent(), BorderLayout.CENTER);
-
-		if (tabContent instanceof BookmarkManagerTabContent)
-			title = "Bookmark Manager";
-		else
-			title = "New Tab";
+		add(this.content.getContent(), BorderLayout.CENTER);
 
 		tabButton = new TabButton(this, title);
 		tabs.addTab(null, this);
@@ -91,7 +113,7 @@ public class Tab extends JPanel implements Reopenable
 			if (address.startsWith("http://"))
 			{
 				if (! (content.getContent() instanceof WebPageTabContent))
-					setTabContent(new WebPageTabContent());
+					setTabContent(new WebPageTabContent(this));
 				
 				((WebPageTabContent) content.getContent()).goTo(address);
 
@@ -100,7 +122,7 @@ public class Tab extends JPanel implements Reopenable
 			else if (address.startsWith("browser://bookmarks"))
 			{
 				if (! (content.getContent() instanceof BookmarkManagerTabContent))
-					setTabContent(new BookmarkManagerTabContent());
+					setTabContent(new BookmarkManagerTabContent(this));
 				
 				title = "Bookmark Manager";
 			}
