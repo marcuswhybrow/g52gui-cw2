@@ -172,7 +172,10 @@ public class Tab extends JPanel implements Reopenable
 
 	public void home()
 	{
-		this.content.home();
+		if (! (this.content instanceof WebPageTabContent))
+			this.setTabContent(new WebPageTabContent(this));
+
+		this.goTo(Settings.get().getHomePage());
 	}
 
 	public void refresh()

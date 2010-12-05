@@ -15,8 +15,7 @@ public interface TabContent {
 	public Component getContent();
 
 	public void setTab(Tab tab);
-
-	public void home();
+	
 	public void refresh();
 	public void back();
 	public void forward();

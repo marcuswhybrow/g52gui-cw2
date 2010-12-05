@@ -28,11 +28,6 @@ public class NewTabTabContent extends JScrollPane implements TabContent
 		this.tab = tab;
 	}
 
-	public void home()
-	{
-		// do nothing
-	}
-
 	public void refresh()
 	{
 		// do nothing
