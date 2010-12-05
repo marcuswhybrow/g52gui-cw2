@@ -1,4 +1,4 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.menu;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -8,6 +8,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;

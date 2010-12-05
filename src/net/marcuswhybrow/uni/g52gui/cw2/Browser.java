@@ -1,5 +1,9 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.menu.MenuBar;
 import com.apple.eawt.AppEvent.PreferencesEvent;
 import com.apple.eawt.PreferencesHandler;
 import java.awt.Image;
@@ -10,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,7 +48,7 @@ public class Browser implements ActionListener
 	private Folder bookmarksBar;
 	private Folder otherBookmarks;
 
-	private Settings preferences;
+	private Settings settings;
 
 	private Image icon;
 
@@ -120,7 +123,7 @@ public class Browser implements ActionListener
 		
 		this.openWindow();
 
-		this.preferences = Settings.get();
+		this.settings = Settings.get();
 	}
 
 	public Folder getBookmarksBarBookmarks()
@@ -220,12 +223,6 @@ public class Browser implements ActionListener
 		return browser;
 	}
 
-	@Override
-	public Object clone() throws CloneNotSupportedException
-	{
-		throw new CloneNotSupportedException();
-	}
-
 	public void openWindow()
 	{
 		Window window = new Window();
@@ -315,14 +312,14 @@ public class Browser implements ActionListener
 			activeWindow.getTabs().selectPreviousTab();
 	}
 
-	public void showPreferences()
+	public void showSettings()
 	{
-		preferences.setVisible(true);
+		settings.setVisible(true);
 	}
 
 	public Image getIcon()
 	{
-		return icon;
+		return this.icon;
 	}
 
 	public static void main(String[] args)

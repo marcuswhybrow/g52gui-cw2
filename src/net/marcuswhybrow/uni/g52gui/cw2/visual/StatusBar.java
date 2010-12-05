@@ -1,4 +1,4 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

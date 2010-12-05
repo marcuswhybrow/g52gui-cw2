@@ -20,8 +20,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.Tab;
-import net.marcuswhybrow.uni.g52gui.cw2.TabContent;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.TabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
 
 /**

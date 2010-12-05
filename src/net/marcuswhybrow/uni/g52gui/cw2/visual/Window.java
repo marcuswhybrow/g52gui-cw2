@@ -1,11 +1,15 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual;
 
+import net.marcuswhybrow.uni.g52gui.cw2.menu.MenuBar;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tabs;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 
 /**
  *

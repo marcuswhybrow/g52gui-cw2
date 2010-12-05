@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;

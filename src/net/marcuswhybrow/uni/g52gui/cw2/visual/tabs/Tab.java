@@ -1,7 +1,12 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.Settings;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.ToolBar;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**

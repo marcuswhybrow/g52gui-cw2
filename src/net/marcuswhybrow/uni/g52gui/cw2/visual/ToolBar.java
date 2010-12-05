@@ -1,5 +1,6 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual;
 
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

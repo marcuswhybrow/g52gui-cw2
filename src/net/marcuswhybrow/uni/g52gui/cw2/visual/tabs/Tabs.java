@@ -1,11 +1,14 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.Component;
 import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import net.marcuswhybrow.uni.g52gui.cw2.Tab.TabType;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.Settings;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab.TabType;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**

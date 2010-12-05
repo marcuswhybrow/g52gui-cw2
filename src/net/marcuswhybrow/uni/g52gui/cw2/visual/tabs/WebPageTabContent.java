@@ -1,5 +1,6 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -14,6 +15,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 
 /**
  *

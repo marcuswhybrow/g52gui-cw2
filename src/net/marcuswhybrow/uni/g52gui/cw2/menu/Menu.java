@@ -1,8 +1,9 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.menu;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 
 /**
  *
