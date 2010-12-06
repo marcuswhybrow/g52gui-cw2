@@ -1,4 +1,4 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.history;
 
 import java.net.URL;
 import java.util.ArrayList;

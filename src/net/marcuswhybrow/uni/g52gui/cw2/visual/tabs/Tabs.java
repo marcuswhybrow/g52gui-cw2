@@ -141,4 +141,9 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	{
 		activeTab = (Tab) getSelectedComponent();
 	}
+
+	public ArrayList<Tab> getAllTabs()
+	{
+		return this.tabs;
+	}
 }

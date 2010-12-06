@@ -21,8 +21,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListCellRenderer;
-import net.marcuswhybrow.uni.g52gui.cw2.History;
-import net.marcuswhybrow.uni.g52gui.cw2.HistoryEntry;
+import net.marcuswhybrow.uni.g52gui.cw2.history.History;
+import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
 
 /**
  *

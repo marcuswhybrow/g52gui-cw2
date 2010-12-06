@@ -15,7 +15,7 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
-import net.marcuswhybrow.uni.g52gui.cw2.History;
+import net.marcuswhybrow.uni.g52gui.cw2.history.History;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 
 /**

@@ -1,12 +1,12 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.awt.event.ActionEvent;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -15,10 +15,13 @@ import java.util.prefs.Preferences;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 
 /**
  *
@@ -53,6 +56,7 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 		this.addSection(new HomePageSection());
 		this.addSection(new NewTabSection());
+		this.addSection(new ToolBarSection());
 
 		this.add(wrapper);
 		this.setMinimumSize(new Dimension(300, 0));
@@ -128,6 +132,16 @@ public class Settings extends JFrame implements WindowListener, Frame
 	public void setNewTabState(NewTabState newTabState)
 	{
 		prefs.put("new tab state", newTabState.name());
+	}
+
+	public boolean getShowHomeButton()
+	{
+		return prefs.getBoolean("show home button", true);
+	}
+
+	public void setShowHomeButton(boolean bool)
+	{
+		prefs.putBoolean("show home button", bool);
 	}
 
 
@@ -250,8 +264,6 @@ public class Settings extends JFrame implements WindowListener, Frame
 			group.add(useNewTabPage);
 			group.add(useHomePage);
 
-//			System.out.println(Settings.get().getNewTabState());
-
 			switch (Settings.get().getNewTabState())
 			{
 				case USE_HOME_PAGE:
@@ -279,6 +291,33 @@ public class Settings extends JFrame implements WindowListener, Frame
 				Settings.get().setNewTabState(NewTabState.USE_NEW_TAB_PAGE);
 			else if (useHomePage.isSelected())
 				Settings.get().setNewTabState(NewTabState.USE_HOME_PAGE);
+		}
+	}
+
+	private class ToolBarSection extends Section implements ActionListener
+	{
+		private JCheckBox checkBox = new JCheckBox("Show Home button", Settings.get().getShowHomeButton());
+
+		public ToolBarSection()
+		{
+			super("Toolbar");
+			this.setComponent(checkBox);
+
+			checkBox.addActionListener(this);
+		}
+
+		@Override
+		public void save()
+		{
+			Settings.get().setShowHomeButton(checkBox.isSelected());
+		}
+
+		public void actionPerformed(ActionEvent ae)
+		{
+			Settings.get().setShowHomeButton(checkBox.isSelected());
+			for (Window window : Browser.get().getWindows())
+				for (Tab tab : window.getTabs().getAllTabs())
+					tab.getToolBar().setHomeButtonVisible(((JCheckBox) ae.getSource()).isSelected());
 		}
 	}
 }

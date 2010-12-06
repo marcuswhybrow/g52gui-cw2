@@ -10,10 +10,10 @@ import java.util.HashMap;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.History;
-import net.marcuswhybrow.uni.g52gui.cw2.HistoryChangeListener;
-import net.marcuswhybrow.uni.g52gui.cw2.HistoryEntry;
-import net.marcuswhybrow.uni.g52gui.cw2.VisitCountEntry;
+import net.marcuswhybrow.uni.g52gui.cw2.history.History;
+import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
+import net.marcuswhybrow.uni.g52gui.cw2.history.VisitCountEntry;
 
 /**
  *

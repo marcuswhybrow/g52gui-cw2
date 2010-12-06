@@ -367,4 +367,9 @@ public class Browser implements ActionListener
 	{
 		return this.activeFrame;
 	}
+
+	public ArrayList<Window> getWindows()
+	{
+		return this.windows;
+	}
 }

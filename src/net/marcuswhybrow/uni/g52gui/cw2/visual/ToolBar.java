@@ -1,11 +1,13 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual;
 
+import java.awt.Color;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
+import net.marcuswhybrow.uni.g52gui.cw2.Settings;
 
 /**
  *
@@ -30,6 +32,8 @@ public class ToolBar extends JToolBar implements ActionListener
 		forwardButton = new JButton("forward");
 		refreshButton = new JButton("refresh");
 		homeButton = new JButton("home");
+
+		homeButton.setVisible(Settings.get().getShowHomeButton());
 
 		this.add(backButton);
 		this.add(forwardButton);
@@ -83,5 +87,11 @@ public class ToolBar extends JToolBar implements ActionListener
 	public void setRefreshEnabled(boolean bool)
 	{
 		this.refreshButton.setEnabled(bool);
+	}
+
+
+	public void setHomeButtonVisible(Boolean bool)
+	{
+		this.homeButton.setVisible(bool);
 	}
 }
