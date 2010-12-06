@@ -190,14 +190,21 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		return this.tab;
 	}
 
+	public String getShortenedWebPageTitle()
+	{
+		String title = getWebPageTitle();
+		return title.length() >= 25 ? title.substring(0, 25) + " ..." : title;
+	}
+
 	public String getWebPageTitle()
 	{
+
 		String title = (String) this.pane.getDocument().getProperty("title");
 		if (title == null)
 			title = (String) this.pane.getDocument().getProperty("TITLE");
 		if (title == null)
 			title = "Untitled Document";
-		return title.length() >= 25 ? title.substring(0, 25) + " ..." : title;
+		return title;
 	}
 
 	public void setState(State state)
@@ -221,7 +228,7 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 				break;
 			case DONE:
 				this.getWindow().getStatusBar().doneWithImportantText();
-				this.tab.setTitle(this.getWebPageTitle());
+				this.tab.setTitle(this.getShortenedWebPageTitle());
 				History.get().addHistoryEntry(this.getWebPageTitle(), this.pane.getPage());
 				break;
 		}

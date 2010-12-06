@@ -74,7 +74,7 @@ public class Browser implements ActionListener
 	{
 		try
 		{
-			icon = ImageIO.read(getClass().getClassLoader().getResource("assets/icon.png"));
+			icon = ImageIO.read(getClass().getClassLoader().getResource("net/marcuswhybrow/uni/g52gui/cw2/assets/icon.png"));
 		}
 		catch (IOException ex)
 		{

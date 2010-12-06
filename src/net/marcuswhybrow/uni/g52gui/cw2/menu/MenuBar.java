@@ -4,11 +4,17 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.HistoryChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.HistoryEntry;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
@@ -73,25 +79,9 @@ public class MenuBar extends JMenuBar
 
 		add(menu);
 
-		menu = new Menu("History");
-
-		menu.addMenuItem("Home", KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.SHIFT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.addMenuItem("Back", KeyStroke.getKeyStroke(KeyEvent.VK_OPEN_BRACKET, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.addMenuItem("Forward", KeyStroke.getKeyStroke(KeyEvent.VK_CLOSE_BRACKET, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-
-		menu.addSeparator();
-		JMenuItem title = new JMenuItem("Most Visited"); title.setEnabled(false);
-		menu.add(title);
-		// most visited URLs will be listed here
-
-		menu.addSeparator();
-		title = new JMenuItem("Resently Closed"); title.setEnabled(false);
-		menu.add(title);
-		// recently visited URLs will be listed here
-		menu.addSeparator();
-
-		menu.addMenuItem("Show Full History", KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		add(menu);
+		
+		add(new HistoryMenu());
+		
 
 		menu = new Menu("Bookmarks");
 
