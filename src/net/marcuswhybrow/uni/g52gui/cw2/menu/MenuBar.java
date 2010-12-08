@@ -11,7 +11,7 @@ public class MenuBar extends JMenuBar
 	public MenuBar()
 	{
 		add(new FileMenu());
-		add(new EditMenu());
+//		add(new EditMenu());
 		add(new ViewMenu());
 		add(new HistoryMenu());
 		add(new BookmarksMenu());
