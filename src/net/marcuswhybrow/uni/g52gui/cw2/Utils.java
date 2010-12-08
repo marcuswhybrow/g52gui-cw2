@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
@@ -57,19 +55,32 @@ public class Utils
 
 	public static JComboBox getComboBoxForBookmarks()
 	{
+
+		return new JComboBox(getComboBoxItemsForBookmarks(null));
+	}
+
+	public static Object[] getComboBoxItemsForBookmarks(BookmarkItem excludeMe)
+	{
 		ArrayList<ComboBoxItem> options = new ArrayList<ComboBoxItem>();
 
 		options.add(new ComboBoxItem(Browser.get().getBookmarksBarBookmarks()));
 
 		for (BookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
-			addItem(options, item, 1);
+			if (item != excludeMe)
+				addItem(options, item, 1);
 
 		options.add(new ComboBoxItem(Browser.get().getOtherBookmarksBookmarks()));
 
 		for (BookmarkItem item : Browser.get().getOtherBookmarksBookmarks().getChildren())
-			addItem(options, item, 1);
+			if (item != excludeMe)
+				addItem(options, item, 1);
 
-		return new JComboBox(options.toArray());
+		return options.toArray();
+	}
+
+	public static Object[] getComboBoxItemsForBookmarks()
+	{
+		return getComboBoxItemsForBookmarks(null);
 	}
 
 	private static void addItem(ArrayList<ComboBoxItem> options, BookmarkItem item, int depth)
@@ -85,34 +96,6 @@ public class Utils
 
 			for (BookmarkItem bi : folder.getChildren())
 				addItem(options, bi, depth + 1);
-		}
-	}
-
-	private static class ComboBoxItem
-	{
-		private Folder folder;
-		private String titleOverride;
-
-		public ComboBoxItem(Folder folder)
-		{
-			this(folder, null);
-		}
-
-		public ComboBoxItem(Folder folder, String titleOverride)
-		{
-			this.folder = folder;
-			this.titleOverride = titleOverride;
-		}
-
-		@Override
-		public String toString()
-		{
-			return titleOverride == null ? this.folder.getName() : titleOverride;
-		}
-
-		public Folder getFolder()
-		{
-			return this.folder;
 		}
 	}
 }

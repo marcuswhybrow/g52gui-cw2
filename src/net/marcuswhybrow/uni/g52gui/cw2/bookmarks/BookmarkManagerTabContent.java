@@ -26,7 +26,9 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.ComboBoxItem;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
+import net.marcuswhybrow.uni.g52gui.cw2.Utils;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.TabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
@@ -78,7 +80,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 	{
 		public FolderContents(Folder folder)
 		{
-			super(folder.getChildren());
+			super(folder != null ? folder.getChildren() : null);
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 			this.setCellRenderer(this);
@@ -348,8 +350,26 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			if (e.getActionCommand() != null)
 			{
 				String actionCommand = e.getActionCommand();
-				System.out.println(actionCommand);
 
+				if ("Edit".equals(actionCommand))
+				{
+					Object[] choices = Utils.getComboBoxItemsForBookmarks(folder);
+					ComboBoxItem i = (ComboBoxItem) JOptionPane.showInputDialog(null, "Choose A New Folder...", "Move A Folder", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]);
+
+					if (i != null)
+					{
+						Folder newFolder = i.getFolder();
+						Folder oldParent = folder.getParent();
+						folder.moveTo(newFolder);
+
+//						// Refresh
+//						DefaultTreeModel dtm = (DefaultTreeModel) bookmarksTree.getModel();
+//						dtm.nodeChanged(node.getParent());
+
+						// Hack way of gettings the page to refresh
+						tab.refresh();
+					}
+				}
 				if (actionCommand.equals("Delete"))
 				{
 
@@ -398,8 +418,12 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 				}
 				else if (actionCommand.equals("Rename"))
 				{
-					folder.setName(JOptionPane.showInputDialog("New Folder Name", folder.getName()));
-					((DefaultTreeModel) bookmarksTree.getModel()).nodeChanged(node);
+					String newName = JOptionPane.showInputDialog("New Folder Name", folder.getName());
+					if (newName != null)
+					{
+						folder.setName(newName);
+						((DefaultTreeModel) bookmarksTree.getModel()).nodeChanged(node);
+					}
 				}
 				else if (actionCommand.equals("Add Page..."))
 				{

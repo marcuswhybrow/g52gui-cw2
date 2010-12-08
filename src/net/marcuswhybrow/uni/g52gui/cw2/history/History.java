@@ -1,13 +1,12 @@
 package net.marcuswhybrow.uni.g52gui.cw2.history;
 
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.swing.Icon;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 
 /**
  *
@@ -25,8 +24,15 @@ public class History implements Iterable<HistoryEntry>
 
 	private void setup()
 	{
-		history = new ArrayList<HistoryEntry>();
-		visitCount = new HashMap<Page, Integer>();
+		history = Browser.get().readFromHistoryFile("history.xml");
+		if (history == null)
+		{
+			history = new ArrayList<HistoryEntry>();
+			visitCount = new HashMap<Page, Integer>();
+		}
+		else
+			buildCountFromHistory();
+
 		historyChangeListeners = new ArrayList<HistoryChangeListener>();
 	}
 
@@ -40,17 +46,30 @@ public class History implements Iterable<HistoryEntry>
 		return h;
 	}
 
+	public void buildCountFromHistory()
+	{
+		visitCount = new HashMap<Page, Integer>();
+
+		for (HistoryEntry entry : history)
+			countPage(entry.getPage());
+	}
+
 	public void addHistoryEntry(Page page)
 	{
 		history.add(new HistoryEntry(page));
 
+		countPage(page);
+		
+		this.notifyHistoryChangeListeners();
+	}
+
+	private void countPage(Page page)
+	{
 		Integer countForAddress = visitCount.get(page);
 		if (countForAddress == null)
 			visitCount.put(page, 1);
 		else
 			visitCount.put(page, countForAddress + 1);
-		
-		this.notifyHistoryChangeListeners();
 	}
 
 	private void notifyHistoryChangeListeners()

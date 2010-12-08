@@ -2,8 +2,6 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 
 /**
@@ -23,7 +21,7 @@ public class Page
 
 	public Page(String address)
 	{
-		this(address, address.toString(), null);
+		this(address, address != null ? address.toString() : null, null);
 	}
 
 	public Page(String address, String title)

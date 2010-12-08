@@ -2,14 +2,8 @@ package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
-import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
@@ -81,6 +75,7 @@ public class Tab extends JPanel implements Reopenable
 				break;
 			case NEW_TAB_PAGE:
 				this.content = new NewTabTabContent(this);
+				this.setTitle("New Tab");
 				break;
 			case BOOKMARK_MANAGER_PAGE:
 				this.addPageToHistory(new BrowserPage(BrowserPage.Type.BOOKMARKS));
@@ -222,7 +217,7 @@ public class Tab extends JPanel implements Reopenable
 	public void setTitle(String title)
 	{
 		if (tabs.getActiveTab() == this)
-			tabs.getWindow().setTitle(this.getCurrentLocation().getTitle());
+			tabs.getWindow().setTitle(getCurrentLocation() != null ? this.getCurrentLocation().getTitle() : "New Tab");
 		this.title = title;
 		this.updateTabButtonTitle();
 	}

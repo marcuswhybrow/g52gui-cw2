@@ -40,9 +40,27 @@ public class Folder implements BookmarkItem
 		this.listeners = new ArrayList<FolderChangeListener>();
 	}
 
-	public void setParent(Folder folder)
+	public void setParent(Folder parent)
 	{
-		this.parent = folder;
+		this.parent = parent;
+	}
+
+	public void moveTo(Folder parent)
+	{
+		Folder oldParent = this.parent;
+		if (this.parent != null)
+			this.parent.removeChild(this);
+		this.parent = parent;
+		if (this.parent != null)
+			this.parent.addChild(this);
+
+		this.hasChanged();
+		oldParent.hasChanged();
+	}
+
+	public Folder getParent()
+	{
+		return this.parent;
 	}
 
 	public Node convertToNode(Document doc)

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Stack;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -35,10 +36,16 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.AddBookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
+import net.marcuswhybrow.uni.g52gui.cw2.history.History;
+import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
+import net.marcuswhybrow.uni.g52gui.cw2.history.VisitCountEntry;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.WindowChangeListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -135,6 +142,20 @@ public class Browser implements ActionListener, WindowChangeListener
 		if (this.otherBookmarks == null)
 			this.otherBookmarks = new RootFolder("Other Bookmarks");
 
+		this.bookmarksBar.addFolderChangeListener(new FolderChangeListener() {
+			public void notifyFolderHasChanged(Folder folder)
+			{
+				Browser.writeToFile(bookmarksBar, "bookmarks_bar.xml");
+			}
+		});
+
+		this.otherBookmarks.addFolderChangeListener(new FolderChangeListener() {
+			public void notifyFolderHasChanged(Folder folder)
+			{
+				Browser.writeToFile(otherBookmarks, "other_bookmarks.xml");
+			}
+		});
+
 		switch (os)
 		{
 			case MAC:
@@ -158,6 +179,19 @@ public class Browser implements ActionListener, WindowChangeListener
 				if (ke.getKeyCode() == KeyEvent.VK_ESCAPE)
 					Browser.get().exitFullScreenMode();
 				return false;
+			}
+		});
+
+		History.get().addHistoryChangeListener(new HistoryChangeListener() {
+
+			public void historyHasChanged(ArrayList<HistoryEntry> history)
+			{
+				Browser.get().writeHistoryToFile();
+			}
+
+			public void visitCountHasChanged(ArrayList<VisitCountEntry> visitCount)
+			{
+				// do nothing
 			}
 		});
 	}
@@ -200,6 +234,50 @@ public class Browser implements ActionListener, WindowChangeListener
 		return null;
 	}
 
+	public ArrayList<HistoryEntry> readFromHistoryFile(String filePath)
+	{
+		Document doc = null;
+		try
+		{
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new File(filePath));
+		}
+		catch (ParserConfigurationException ex)
+		{
+			System.err.println("parser configuration error");
+		}
+		catch (SAXException ex)
+		{
+			System.err.println("SAX error");
+		}
+		catch (IOException ex)
+		{
+			System.err.println("IO error");
+		}
+
+		if (doc != null)
+		{
+			ArrayList<HistoryEntry> entries = new ArrayList<HistoryEntry>();
+
+			doc.getDocumentElement().normalize();
+			NodeList nodes = doc.getDocumentElement().getChildNodes();
+			int numNodes = nodes.getLength();
+			for (int i = 0; i < numNodes; i++)
+			{
+				Element entry = (Element) nodes.item(i);
+
+				Page page;
+				if (entry.hasAttribute("browserPageType"))
+					page = new BrowserPage(BrowserPage.Type.valueOf(entry.getAttribute("browserPageType")));
+				else
+					page = new Page(entry.getAttribute("address"), entry.getAttribute("title"));
+				entries.add(new HistoryEntry(page, entry.getAttribute("date")));
+			}
+			return entries;
+
+		}
+		return null;
+	}
+
 	private static void writeToFile(Folder folder, String filePath)
 	{
 		Document doc = null;
@@ -215,6 +293,39 @@ public class Browser implements ActionListener, WindowChangeListener
 		if (doc != null)
 		{
 			doc.appendChild(folder.convertToNode(doc));
+			try
+			{
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(new File(filePath)));
+			}
+			catch (TransformerException ex)
+			{
+				System.err.print("XML transformer error");
+			}
+		}
+	}
+
+	public void writeHistoryToFile()
+	{
+		writeToFile(History.get().getArrayList(), "history.xml");
+	}
+
+	private static void writeToFile(ArrayList<HistoryEntry> entries, String filePath)
+	{
+		Document doc = null;
+		try
+		{
+			doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		}
+		catch (ParserConfigurationException ex)
+		{
+			System.err.println("Some sort of XML error");
+		}
+
+		if (doc != null)
+		{
+			doc.appendChild(doc.createElement("history"));
+			for (HistoryEntry entry : entries)
+				doc.getDocumentElement().appendChild(entry.convertToNode(doc));
 			try
 			{
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(doc), new StreamResult(new File(filePath)));
@@ -295,8 +406,6 @@ public class Browser implements ActionListener, WindowChangeListener
 
 	public void close()
 	{
-		Browser.writeToFile(bookmarksBar, "bookmarks_bar.xml");
-		Browser.writeToFile(otherBookmarks, "other_bookmarks.xml");
 		System.exit(0);
 	}
 

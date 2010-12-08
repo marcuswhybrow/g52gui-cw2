@@ -15,7 +15,7 @@ public class BookmarkMenuItem extends JMenuItem implements ActionListener
 
 	public BookmarkMenuItem(Bookmark bookmark)
 	{
-		super(bookmark.getPage().getTitle(), bookmark.getPage().getFavIcon());
+		super(bookmark.getPage() != null ? bookmark.getPage().getTitle() : "", bookmark.getPage() != null ? bookmark.getPage().getFavIcon() : null);
 		this.bookmark = bookmark;
 		this.addActionListener(this);
 	}
