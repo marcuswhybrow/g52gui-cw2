@@ -173,11 +173,12 @@ public class Tab extends JPanel implements Reopenable
 
 	public void reopen()
 	{
+		this.setTabButton(tabButton);
 		tabs.openTab(this);
+		
 		Window window = tabs.getWindow();
 		if (window.isClosed())
 			window.reopen();
-		isClosed = false;
 	}
 
 	public boolean isClosed()

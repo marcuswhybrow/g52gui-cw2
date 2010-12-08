@@ -16,7 +16,6 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.StatusBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.ToolBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 

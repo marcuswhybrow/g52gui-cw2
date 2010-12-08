@@ -271,7 +271,6 @@ public class Browser implements ActionListener
 			item = closedItems.pop();
 			if (item.isClosed())
 			{
-				System.out.println("Opening item: " + item.toString());
 				item.reopen();
 				break;
 			}
