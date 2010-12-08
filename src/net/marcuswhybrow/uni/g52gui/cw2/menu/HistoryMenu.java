@@ -7,20 +7,29 @@ import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
+import net.marcuswhybrow.uni.g52gui.cw2.ClosedItemsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
 import net.marcuswhybrow.uni.g52gui.cw2.history.VisitCountEntry;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 
 /**
  *
  * @author marcus
  */
-public class HistoryMenu extends Menu implements HistoryChangeListener
+public class HistoryMenu extends Menu implements HistoryChangeListener, ClosedItemsChangeListener
 {
 	private ArrayList<VisitCountEntry> visitCount = null;
 
@@ -28,12 +37,13 @@ public class HistoryMenu extends Menu implements HistoryChangeListener
 	{
 		super("History");
 
-		this.rebuildMenu();
+		this.rebuild();
 
 		History.get().addHistoryChangeListener(this);
+		Browser.get().addClosedItemsChangeListener(this);
 	}
 
-	private void rebuildMenu()
+	private void rebuild()
 	{
 		this.removeAll();
 
@@ -72,6 +82,18 @@ public class HistoryMenu extends Menu implements HistoryChangeListener
 		title = new JMenuItem("Resently Closed");
 		title.setEnabled(false);
 		this.add(title);
+
+		for (Reopenable item : Browser.get().getClosedItems())
+		{
+			if (item instanceof Tab)
+				this.add(new ClosedMenuItem(item, ((Tab) item).getCurrentLocation()));
+			else if (item instanceof Window)
+			{
+				Window window = (Window) item;
+				if (window.getTabs().getActiveTab() != null)
+					this.add(new ClosedMenuItem(item, window.getTabs().getActiveTab().getCurrentLocation()));
+			}
+		}
 		
 		this.addSeparator();
 
@@ -86,6 +108,28 @@ public class HistoryMenu extends Menu implements HistoryChangeListener
 	public void visitCountHasChanged(ArrayList<VisitCountEntry> visitCount)
 	{
 		this.visitCount = visitCount;
-		this.rebuildMenu();
+		this.rebuild();
+	}
+
+	public void closedItemsHaveChanged(Stack<Reopenable> items)
+	{
+		this.rebuild();
+	}
+
+	private class ClosedMenuItem extends BookmarkMenuItem
+	{
+		private Reopenable item;
+
+		public ClosedMenuItem(Reopenable item , Page page)
+		{
+			super(new Bookmark(page));
+			this.item = item;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent ae)
+		{
+			Browser.get().openClosedItem(item);
+		}
 	}
 }

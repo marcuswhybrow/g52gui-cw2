@@ -49,7 +49,9 @@ public class Browser implements ActionListener, WindowChangeListener
 
 	private ArrayList<Window> windows = new ArrayList<Window>();
 	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
+
 	private ArrayList<WindowsChangeListener> windowsChangeListeners = new ArrayList<WindowsChangeListener>();
+	private ArrayList<ClosedItemsChangeListener> closedItemsChangeListeners = new ArrayList<ClosedItemsChangeListener>();
 
 	private Frame activeFrame = null;
 	private Window activeWindow = null;
@@ -289,6 +291,7 @@ public class Browser implements ActionListener, WindowChangeListener
 	public void addClosedItem(Reopenable item)
 	{
 		closedItems.push(item);
+		notifyClosedItemsChangeListeners();
 	}
 
 	public void openLastClosedItem()
@@ -301,9 +304,17 @@ public class Browser implements ActionListener, WindowChangeListener
 			if (item.isClosed())
 			{
 				item.reopen();
+				notifyClosedItemsChangeListeners();
 				break;
 			}
 		}
+	}
+
+	public void openClosedItem(Reopenable item)
+	{
+		item.reopen();
+		closedItems.remove(item);
+		notifyClosedItemsChangeListeners();
 	}
 
 	public void actionPerformed(ActionEvent e)
@@ -449,6 +460,27 @@ public class Browser implements ActionListener, WindowChangeListener
 	{
 		for (WindowsChangeListener wcl : windowsChangeListeners)
 			wcl.windowsHaveChanged(this.getWindows());
+	}
+
+	public Stack<Reopenable> getClosedItems()
+	{
+		return this.closedItems;
+	}
+
+	public void addClosedItemsChangeListener(ClosedItemsChangeListener cicl)
+	{
+		closedItemsChangeListeners.add(cicl);
+	}
+
+	public void removeClosedItemsChangeListener(ClosedItemsChangeListener cicl)
+	{
+		closedItemsChangeListeners.remove(cicl);
+	}
+
+	public void notifyClosedItemsChangeListeners()
+	{
+		for (ClosedItemsChangeListener cicl : closedItemsChangeListeners)
+			cicl.closedItemsHaveChanged(closedItems);
 	}
 
 	public static void main(String[] args)
