@@ -269,9 +269,9 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 		private JMenuItem rename = new JMenuItem("Rename");
 		private JMenuItem edit = new JMenuItem("Edit");
 
-		private JMenuItem cut = new JMenuItem("Cut");
-		private JMenuItem copy = new JMenuItem("Copy");
-		private JMenuItem paste = new JMenuItem("Paste");
+//		private JMenuItem cut = new JMenuItem("Cut");
+//		private JMenuItem copy = new JMenuItem("Copy");
+//		private JMenuItem paste = new JMenuItem("Paste");
 
 		private JMenuItem delete = new JMenuItem("Delete");
 
@@ -288,9 +288,9 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			addMenuItem(edit);
 
 			addSeparator();
-			addMenuItem(cut);
-			addMenuItem(copy);
-			addMenuItem(paste);
+//			addMenuItem(cut);
+//			addMenuItem(copy);
+//			addMenuItem(paste);
 
 			addSeparator();
 			addMenuItem(delete);
@@ -299,7 +299,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			addMenuItem(addPage);
 			addMenuItem(addFolder);
 
-			paste.setEnabled(false);
+//			paste.setEnabled(false);
 		}
 
 		private void addMenuItem(JMenuItem menuItem)
@@ -328,8 +328,8 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 				delete.setEnabled(false);
 				rename.setEnabled(false);
 				edit.setEnabled(false);
-				cut.setEnabled(false);
-				copy.setEnabled(false);
+//				cut.setEnabled(false);
+//				copy.setEnabled(false);
 			}
 		}
 
@@ -339,8 +339,8 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			delete.setEnabled(true);
 			rename.setEnabled(true);
 			edit.setEnabled(true);
-			cut.setEnabled(true);
-			copy.setEnabled(true);
+//			cut.setEnabled(true);
+//			copy.setEnabled(true);
 			super.show(component, x, y);
 		}
 
