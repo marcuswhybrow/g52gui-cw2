@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,44 +11,32 @@ import org.w3c.dom.Node;
  */
 public class Bookmark implements BookmarkItem
 {
-	private String address;
-	private String title;
+	private Page page;
 	private Folder parent;
 
-	public Bookmark(String address)
+	public Bookmark(Page page)
 	{
-		this(address, null);
+		this(page, null);
 	}
 
-	public Bookmark(String address, String title)
-	{
-		this(address, title, null);
-	}
-
-	public Bookmark(String address, String title, Folder parent)
+	public Bookmark(Page page, Folder parent)
 	{	
-		this.address = address;
-		this.title = title != null ? title : address;
+		this.page = page;
 
 		if (parent != null)
 			parent.addChild(this);
 	}
 
-	public String getAddress()
+	public Page getPage()
 	{
-		return address;
-	}
-
-	public String getTitle()
-	{
-		return title;
+		return page;
 	}
 
 	public Node convertToNode(Document doc)
 	{
 		Element bookmark = doc.createElement(getXmlElementName());
-		bookmark.setAttribute("address", address);
-		bookmark.setAttribute("title", title);
+		bookmark.setAttribute("address", page.getAddress());
+		bookmark.setAttribute("title", page.getTitle());
 		return bookmark;
 	}
 
@@ -58,13 +47,13 @@ public class Bookmark implements BookmarkItem
 
 	public String printOut()
 	{
-		return address + " - " + title;
+		return page.getAddress() + " - " + page.getTitle();
 	}
 
 	@Override
 	public String toString()
 	{
-		return title;
+		return page.getTitle();
 	}
 
 	public static String getXmlElementName()

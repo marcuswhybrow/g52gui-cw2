@@ -103,7 +103,6 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 
 	public void goTo(String address)
 	{
-		System.out.println("going to " + address);
 		new SetPageWorker(address).execute();
 	}
 
@@ -220,11 +219,6 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			}
 			catch (IOException ex) {}
 			return false;
-		}
-
-		@Override
-		protected void done() {
-			System.out.println("done loading " + this.address);
 		}
 	}
 }

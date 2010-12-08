@@ -19,6 +19,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.ToolBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.BookmarksBar;
 
 /**
  *
@@ -31,8 +32,8 @@ public class Tab extends JPanel implements Reopenable
 	protected boolean isClosed;
 	
 	private TabContent content;
-	private AddressBar addressBar;
 	private ToolBar toolBar;
+	private BookmarksBar bookmarksBar;
 
 	private TabButton tabButton;
 
@@ -56,8 +57,16 @@ public class Tab extends JPanel implements Reopenable
 		this.tabs = tabs;
 		
 		setLayout(new BorderLayout());
+
+		JPanel toolBars = new JPanel(new BorderLayout());
+
 		toolBar = new ToolBar(this);
-		add(toolBar, BorderLayout.NORTH);
+		toolBars.add(toolBar, BorderLayout.NORTH);
+
+		bookmarksBar = new BookmarksBar(this);
+		toolBars.add(bookmarksBar, BorderLayout.SOUTH);
+		
+		add(toolBars, BorderLayout.NORTH);
 
 		this.setTabButton(new TabButton(this, ""));
 
@@ -328,5 +337,10 @@ public class Tab extends JPanel implements Reopenable
 		catch (IndexOutOfBoundsException e) {}
 
 		return null;
+	}
+
+	public BookmarksBar getBookmarksBar()
+	{
+		return this.bookmarksBar;
 	}
 }

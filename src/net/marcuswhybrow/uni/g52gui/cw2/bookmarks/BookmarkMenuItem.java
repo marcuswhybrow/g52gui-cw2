@@ -15,18 +15,19 @@ public class BookmarkMenuItem extends JMenuItem implements ActionListener
 
 	public BookmarkMenuItem(Bookmark bookmark)
 	{
+		super(bookmark.getPage().getTitle(), bookmark.getPage().getFavIcon());
 		this.bookmark = bookmark;
 		this.addActionListener(this);
 	}
 
-	@Override
-	public String getText()
-	{
-		return bookmark != null ? bookmark.getAddress() : null;
-	}
+//	@Override
+//	public String getText()
+//	{
+//		return bookmark != null ? bookmark.getPage().getAddress() : null;
+//	}
 
 	public void actionPerformed(ActionEvent ae)
 	{
-		Browser.get().getActiveWindow().getTabs().openWebPageTab(bookmark.getAddress());
+		Browser.get().getActiveWindow().getTabs().openWebPageTab(bookmark.getPage().getAddress());
 	}
 }

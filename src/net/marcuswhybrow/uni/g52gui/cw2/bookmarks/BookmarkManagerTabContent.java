@@ -20,6 +20,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.TabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
@@ -280,7 +281,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 				else if (actionCommand.equals("Add Page..."))
 				{
 					String url = JOptionPane.showInputDialog("URL");
-					Bookmark bookmark = new Bookmark(url, url, folder);
+					Bookmark bookmark = new Bookmark(new Page(url), folder);
 				}
 			}
 		}

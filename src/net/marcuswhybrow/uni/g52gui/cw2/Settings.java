@@ -38,12 +38,16 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 	public enum NewTabState {USE_NEW_TAB_PAGE, USE_HOME_PAGE, NOT_SET};
 
+	private ArrayList<SettingsChangeListener> changeListeners;
+
 	private Settings() {
 		super("Preferences");
 	}
 
 	private void setup()
 	{
+		changeListeners = new ArrayList<SettingsChangeListener>();
+
 		this.addWindowListener(this);
 		this.sections = new ArrayList<Section>();
 
@@ -120,7 +124,13 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 	public void setHomePage(String homePage)
 	{
-		prefs.put("home page", homePage);
+		String oldValue = getHomePage();
+
+		if (!oldValue.equals(homePage))
+		{
+			prefs.put("home page", homePage);
+			notifySettingsChangeListeners("home page", oldValue, homePage);
+		}
 	}
 
 
@@ -131,7 +141,13 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 	public void setNewTabState(NewTabState newTabState)
 	{
-		prefs.put("new tab state", newTabState.name());
+		NewTabState oldValue = getNewTabState();
+
+		if (oldValue != newTabState)
+		{
+			prefs.put("new tab state", newTabState.name());
+			notifySettingsChangeListeners("new tab state", oldValue, newTabState);
+		}
 	}
 
 	public boolean getShowHomeButton()
@@ -141,7 +157,29 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 	public void setShowHomeButton(boolean bool)
 	{
-		prefs.putBoolean("show home button", bool);
+		boolean oldValue = getShowHomeButton();
+
+		if (oldValue != bool)
+		{
+			prefs.putBoolean("show home button", bool);
+			notifySettingsChangeListeners("show home button", oldValue, bool);
+		}
+	}
+
+	public boolean getAlwaysShowBookmarksBar()
+	{
+		return prefs.getBoolean("always show bookmarks bar", true);
+	}
+
+	public void setAlwaysShowBookmarksBar(boolean bool)
+	{
+		boolean oldValue = getAlwaysShowBookmarksBar();
+
+		if (oldValue != bool)
+		{
+			prefs.putBoolean("always show bookmarks bar", bool);
+			notifySettingsChangeListeners("always show bookmarks bar", oldValue, bool);
+		}
 	}
 
 
@@ -314,10 +352,30 @@ public class Settings extends JFrame implements WindowListener, Frame
 
 		public void actionPerformed(ActionEvent ae)
 		{
-			Settings.get().setShowHomeButton(checkBox.isSelected());
+			this.save();
 			for (Window window : Browser.get().getWindows())
 				for (Tab tab : window.getTabs().getAllTabs())
-					tab.getToolBar().setHomeButtonVisible(((JCheckBox) ae.getSource()).isSelected());
+					tab.getToolBar().setHomeButtonVisible(Settings.get().getShowHomeButton());
 		}
+	}
+
+
+	
+	// Change Listeners
+
+	public void addSettingsChangeListener(SettingsChangeListener scl)
+	{
+		this.changeListeners.add(scl);
+	}
+
+	public void removeSettingsChangeListener(SettingsChangeListener scl)
+	{
+		this.changeListeners.remove(scl);
+	}
+
+	public void notifySettingsChangeListeners(String settingName, Object oldValue, Object newValue)
+	{
+		for (SettingsChangeListener scl : changeListeners)
+			scl.settingHasChanged(settingName, oldValue, newValue);
 	}
 }

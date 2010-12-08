@@ -1,5 +1,8 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.UnsupportedLookAndFeelException;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
@@ -11,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +29,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -53,6 +59,7 @@ public class Browser implements ActionListener
 	private ImageIcon tabFavIcon = null;
 	private ImageIcon bookmarksIcon = null;
 	private ImageIcon historyIcon = null;
+	private ImageIcon folderIcon = null;
 
 	public enum OperatingSystem {WINDOWS, MAC, LINUX_OR_UNIX, OTHER};
 	private OperatingSystem os;
@@ -75,22 +82,19 @@ public class Browser implements ActionListener
 	private void determineIcons()
 	{
 		icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/icon.png"));
+		historyIcon = getImageIcon("assets/historyIcon.png");
+		bookmarksIcon = getImageIcon("assets/bookmarksIcon.png");
+		tabFavIcon = getImageIcon("assets/tabFavIcon.png");
+		tabLoadingIcon = getImageIcon("assets/tabLoadingIcon.gif");
+		folderIcon = getImageIcon("assets/folderIcon.png");
+	}
 
-		Image i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/historyIcon.png"));
+	private ImageIcon getImageIcon(String location)
+	{
+		Image i = Toolkit.getDefaultToolkit().getImage(getClass().getResource(location));
 		if (i != null)
-			historyIcon = new ImageIcon(i);
-
-		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/bookmarksIcon.png"));
-		if (i != null)
-			bookmarksIcon = new ImageIcon(i);
-
-		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabFavIcon.png"));
-		if (i != null)
-			tabFavIcon = new ImageIcon(i);
-
-		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabLoadingIcon.gif"));
-		if (i != null)
-			tabLoadingIcon = new ImageIcon(i);
+			return new ImageIcon(i);
+		return null;
 	}
 
 	private void setup()
@@ -199,7 +203,7 @@ public class Browser implements ActionListener
 			return rootFolder;
 		}
 		else if (element.getNodeName().equals(Bookmark.getXmlElementName()))
-			return new Bookmark(element.getAttribute("address"), element.getAttribute("title"));
+			return new Bookmark(new Page(element.getAttribute("address"), element.getAttribute("title")));
 		else if (element.getNodeName().equals(Folder.getXmlElementName()))
 		{
 			Folder folder = new Folder(element.getAttribute("name"));
@@ -297,6 +301,9 @@ public class Browser implements ActionListener
 		else if ("Preferences".equals(e.getActionCommand()))
 			Settings.get().showSettings();
 
+		else if ("Always Show Bookmarks Bar".equals(e.getActionCommand()))
+			Settings.get().setAlwaysShowBookmarksBar(((JCheckBoxMenuItem) e.getSource()).isSelected());
+
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
 		else if ("Back".equals(e.getActionCommand()) && activeWindow != null)
@@ -342,34 +349,11 @@ public class Browser implements ActionListener
 		return this.bookmarksIcon;
 	}
 
-	public static void main(String[] args)
+	public ImageIcon getFolderIcon()
 	{
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
-		System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
-		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
-
-		try
-		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-		catch (Exception e)
-		{
-			System.err.println("Unable to set look and feel");
-		}
-
-		try
-		{
-			// Set the tree leaf icon in a JTree to be the same as the folder icon
-			UIDefaults def = UIManager.getLookAndFeelDefaults();
-			def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-
-		Browser.get();
+		return this.folderIcon;
 	}
+
 
 	public OperatingSystem getOperatingSystem()
 	{
@@ -389,5 +373,26 @@ public class Browser implements ActionListener
 	public ArrayList<Window> getWindows()
 	{
 		return this.windows;
+	}
+
+	public static void main(String[] args)
+	{
+		System.setProperty("apple.laf.useScreenMenuBar", "true");
+		System.setProperty("apple.awt.graphics.EnableQ2DX", "true");
+		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Browser");
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (ClassNotFoundException ex) {}
+		catch (InstantiationException ex) {}
+		catch (IllegalAccessException ex) {}
+		catch (UnsupportedLookAndFeelException ex) {}
+
+		// Set the tree leaf icon in a JTree to be the same as the folder icon
+		UIDefaults def = UIManager.getLookAndFeelDefaults();
+		def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
+
+		Browser.get();
 	}
 }
