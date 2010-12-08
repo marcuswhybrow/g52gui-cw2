@@ -2,11 +2,14 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -134,6 +137,15 @@ public class Browser implements ActionListener, WindowChangeListener
 		this.openWindow();
 
 		this.settings = Settings.get();
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+			public boolean dispatchKeyEvent(KeyEvent ke)
+			{
+				if (ke.getKeyCode() == KeyEvent.VK_ESCAPE)
+					Browser.get().exitFullScreenMode();
+				return false;
+			}
+		});
 	}
 
 	public Folder getBookmarksBarBookmarks()
@@ -319,25 +331,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		else if ("Reload This Page".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().refresh();
 		else if ("Enter Full Screen".equals(e.getActionCommand()) && activeWindow != null)
-		{
-			if (fullScreenWindow == null)
-			{
-				activeWindow.setVisible(false);
-				fullScreenWindow = new Window(activeWindow);
-				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(fullScreenWindow);
-			}
-			else
-			{
-				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
-
-				Window originalWindow = fullScreenWindow.getOriginalWindow();
-				originalWindow.setTabs(fullScreenWindow.getTabs());
-
-				fullScreenWindow.close();
-				fullScreenWindow = null;
-				originalWindow.setVisible(true);
-			}
-		}
+			this.toggleFullScreenMode();
 
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
@@ -354,6 +348,33 @@ public class Browser implements ActionListener, WindowChangeListener
 			activeWindow.getTabs().selectNextTab();
 		else if ("Select Previous Tab".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().selectPreviousTab();
+	}
+
+	public void toggleFullScreenMode()
+	{
+		if (fullScreenWindow == null)
+		{
+			activeWindow.setVisible(false);
+			fullScreenWindow = new Window(activeWindow);
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(fullScreenWindow);
+		}
+		else
+			this.exitFullScreenMode();
+	}
+
+	public void exitFullScreenMode()
+	{
+		if (fullScreenWindow != null)
+		{
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+
+			Window originalWindow = fullScreenWindow.getOriginalWindow();
+			originalWindow.setTabs(fullScreenWindow.getTabs());
+
+			fullScreenWindow.close();
+			fullScreenWindow = null;
+			originalWindow.setVisible(true);
+		}
 	}
 
 	public void showSettings()
