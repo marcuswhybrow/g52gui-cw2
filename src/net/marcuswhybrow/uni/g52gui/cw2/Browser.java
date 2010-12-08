@@ -316,6 +316,8 @@ public class Browser implements ActionListener, WindowChangeListener
 
 		else if ("Always Show Bookmarks Bar".equals(e.getActionCommand()))
 			Settings.get().setAlwaysShowBookmarksBar(((JCheckBoxMenuItem) e.getSource()).isSelected());
+		else if ("Reload This Page".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.getTabs().getActiveTab().refresh();
 
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
