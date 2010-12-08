@@ -86,9 +86,6 @@ public class HistoryMenu extends Menu implements HistoryChangeListener
 	public void visitCountHasChanged(ArrayList<VisitCountEntry> visitCount)
 	{
 		this.visitCount = visitCount;
-
-		for (VisitCountEntry e : visitCount.size() > 9 ? visitCount.subList(0, 8) : visitCount)
-			System.out.println(e.getPage().getTitle());
 		this.rebuildMenu();
 	}
 }

@@ -130,7 +130,6 @@ public class Tab extends JPanel implements Reopenable
 
 	public void goTo(String address)
 	{
-		System.out.println("going to " + address);
 		this.addAddressToHistory(address);
 		this.goToWithoutHistory(address);
 	}

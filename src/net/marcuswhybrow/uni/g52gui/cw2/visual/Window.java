@@ -133,7 +133,6 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 
 	public void reopen()
 	{
-		System.out.println("opening window");
 		setVisible(true);
 	}
 

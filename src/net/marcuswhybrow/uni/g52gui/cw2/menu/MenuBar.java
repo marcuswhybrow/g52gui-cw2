@@ -95,7 +95,6 @@ public class MenuBar extends JMenuBar
 		Menu otherBookmarks = new Menu("Other Bookmarks");
 
 		Folder f = Browser.get().getOtherBookmarksBookmarks();
-//		System.out.println(f);
 		for (BookmarkItem item : f.getChildren())
 			addItem(otherBookmarks, item);
 		menu.add(otherBookmarks);

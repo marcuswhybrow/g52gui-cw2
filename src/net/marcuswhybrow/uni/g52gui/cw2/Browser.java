@@ -278,9 +278,7 @@ public class Browser implements ActionListener
 	}
 
 	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println(e.getActionCommand());
-		
+	{	
 		if ("New Window".equals(e.getActionCommand()))
 			Browser.get().openWindow();
 		else if ("New Tab".equals(e.getActionCommand()))

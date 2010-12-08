@@ -6,8 +6,11 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
@@ -77,7 +80,7 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			}
 			else
 			{
-				this.tab.goToWithoutHistory(e.getURL().toString());
+				this.tab.goTo(e.getURL().toString());
 			}
 		}
 		else if (e.getEventType() == HyperlinkEvent.EventType.ENTERED)
@@ -98,28 +101,10 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			this.setState(WebPageTabContent.State.DONE);
 	}
 
-	public void goTo(URL location)
-	{
-		try
-		{
-			pane.setPage(location);
-		}
-		catch (IOException ex)
-		{
-			System.err.println("Malformed URL: " + location.toString());
-		}
-	}
-
 	public void goTo(String address)
 	{
-		try
-		{
-			this.goTo(new URL(address));
-		}
-		catch (MalformedURLException ex)
-		{
-			System.err.println("Could not convert a string to a URL");
-		}
+		System.out.println("going to " + address);
+		new SetPageWorker(address).execute();
 	}
 
 	public Component getContent()
@@ -213,6 +198,33 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			setState(State.WAITING);
 			this.allowCurrentPageToRefresh();
 			super.setPage(url);
+		}
+	}
+
+	private class SetPageWorker extends SwingWorker<Boolean, Object>
+	{
+		private String address;
+
+		public SetPageWorker(String address)
+		{
+			this.address = address;
+		}
+
+		@Override
+		protected Boolean doInBackground()
+		{
+			try
+			{
+				pane.setPage(this.address);
+				return true;
+			}
+			catch (IOException ex) {}
+			return false;
+		}
+
+		@Override
+		protected void done() {
+			System.out.println("done loading " + this.address);
 		}
 	}
 }

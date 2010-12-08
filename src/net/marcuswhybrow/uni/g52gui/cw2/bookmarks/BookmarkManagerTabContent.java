@@ -242,7 +242,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 					}
 					catch (CannotDeleteRootFolderExcetpion ex)
 					{
-						System.out.println("Attempted to delete a RootFolder (shouldn't be possible)");
+						System.err.println("Attempted to delete a RootFolder (shouldn't be possible)");
 					}
 
 					// Select the parent node in the UI
