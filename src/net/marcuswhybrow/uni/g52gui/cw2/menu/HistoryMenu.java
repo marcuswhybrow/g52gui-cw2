@@ -10,6 +10,7 @@ import java.util.HashMap;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
@@ -47,13 +48,24 @@ public class HistoryMenu extends Menu implements HistoryChangeListener
 		this.add(title);
 
 		if (visitCount != null)
-			for (VisitCountEntry entry : visitCount.size() > 9 ? visitCount.subList(0, 8) : visitCount)
+		{
+			int number = 0;
+			for (VisitCountEntry entry : visitCount)
 			{
+				// Ignore browser pages (such as history and bookmarks manager)
+				if (entry.getPage() instanceof BrowserPage)
+					continue;
+				
 				String pageTitle = entry.getPage().getTitle();
 				if (pageTitle.length() > 30)
 					pageTitle = pageTitle.substring(0, 30) + " ...";
 				this.add(new PageMenuItem(entry.getPage()));
+
+				number ++;
+				if (number >= 9)
+					break;
 			}
+		}
 		
 		this.addSeparator();
 

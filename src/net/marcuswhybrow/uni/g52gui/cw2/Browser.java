@@ -3,7 +3,6 @@ package net.marcuswhybrow.uni.g52gui.cw2;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
-import net.marcuswhybrow.uni.g52gui.cw2.menu.MenuBar;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -53,6 +51,8 @@ public class Browser implements ActionListener
 	private Image icon;
 	private ImageIcon tabLoadingIcon = null;
 	private ImageIcon tabFavIcon = null;
+	private ImageIcon bookmarksIcon = null;
+	private ImageIcon historyIcon = null;
 
 	public enum OperatingSystem {WINDOWS, MAC, LINUX_OR_UNIX, OTHER};
 	private OperatingSystem os;
@@ -76,7 +76,15 @@ public class Browser implements ActionListener
 	{
 		icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/icon.png"));
 
-		Image i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabFavIcon.png"));
+		Image i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/historyIcon.png"));
+		if (i != null)
+			historyIcon = new ImageIcon(i);
+
+		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/bookmarksIcon.png"));
+		if (i != null)
+			bookmarksIcon = new ImageIcon(i);
+
+		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabFavIcon.png"));
 		if (i != null)
 			tabFavIcon = new ImageIcon(i);
 
@@ -325,6 +333,16 @@ public class Browser implements ActionListener
 	public ImageIcon getTabFavIcon()
 	{
 		return this.tabFavIcon;
+	}
+
+	public ImageIcon getHistoryIcon()
+	{
+		return this.historyIcon;
+	}
+
+	public ImageIcon getBookmarksIcon()
+	{
+		return this.bookmarksIcon;
 	}
 
 	public static void main(String[] args)

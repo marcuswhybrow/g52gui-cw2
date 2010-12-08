@@ -67,6 +67,7 @@ public class TabButton extends JPanel
 		label.setIcon(icon);
 		if (icon instanceof ImageIcon)
 			((ImageIcon) icon).setImageObserver(label);
+		label.invalidate();
 	}
 
 	private class CloseTabButton extends JButton implements ActionListener, MouseListener

@@ -1,6 +1,9 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 
 /**
@@ -9,31 +12,46 @@ import javax.swing.Icon;
  */
 public class Page
 {
-	private URL address;
+	private String address;
 	private String title;
 	private Icon favIcon;
 
-	public Page(URL address)
+	public Page()
+	{
+		this(null, null, null);
+	}
+
+	public Page(String address)
 	{
 		this(address, address.toString(), null);
 	}
 
-	public Page(URL address, String title)
+	public Page(String address, String title)
 	{
 		this(address, title, null);
 	}
 
-	public Page(URL address, String title, Icon favIcon)
+	public Page(String address, String title, Icon favIcon)
 	{
 		this.address = address;
 		this.title = title;
 		this.favIcon = favIcon;
 
 		if (this.favIcon == null)
-			this.favIcon = Utils.getFavIconForURL(address);
+			this.favIcon = Utils.getFavIconForAddress(address);
 	}
 
-	public URL getAddress()
+	public String getHost()
+	{
+		try
+		{
+			return new URL(this.address).getHost();
+		}
+		catch (MalformedURLException ex) {}
+		return null;
+	}
+
+	public String getAddress()
 	{
 		return address;
 	}
@@ -55,7 +73,6 @@ public class Page
 
 	public Icon getFavIcon()
 	{
-		System.out.println(favIcon);
 		return favIcon != null ? favIcon : Browser.get().getTabFavIcon();
 	}
 
@@ -84,5 +101,11 @@ public class Page
 		int hash = 3;
 		hash = 89 * hash + (this.address != null ? this.address.hashCode() : 0);
 		return hash;
+	}
+
+	@Override
+	public String toString()
+	{
+		return address != null ? this.address.toString() : super.toString();
 	}
 }

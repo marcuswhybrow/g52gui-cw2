@@ -68,7 +68,7 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 	
 	public void goTo(String url, Tab tab)
 	{
-		tab.goTo(url);
+		tab.goToWithoutHistory(url);
 	}
 
 	public Tabs getTabs()
