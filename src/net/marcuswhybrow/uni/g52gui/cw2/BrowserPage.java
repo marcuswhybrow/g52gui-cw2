@@ -8,7 +8,7 @@ import javax.swing.Icon;
  */
 public class BrowserPage extends Page
 {
-	public static enum Type {HISTORY, BOOKMARKS};
+	public static enum Type {HISTORY, BOOKMARKS, VIEW_SOURCE};
 	private Type type;
 
 	public BrowserPage(Type type)

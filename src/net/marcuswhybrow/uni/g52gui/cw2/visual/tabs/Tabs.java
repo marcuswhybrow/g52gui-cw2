@@ -47,6 +47,12 @@ public class Tabs extends JTabbedPane implements ChangeListener
 		openTab(new Tab(this, TabType.NEW_TAB_PAGE));
 	}
 
+	public void openSourceCodeTab()
+	{
+		if (this.getActiveTab().getTabType() == Tab.TabType.WEB_PAGE)
+			openTab(new Tab(this, TabType.VIEW_SOURCE, this.getActiveTab().getCurrentLocation().getAddress()));
+	}
+
 
 	public void openNewTab()
 	{

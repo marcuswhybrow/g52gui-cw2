@@ -332,6 +332,8 @@ public class Browser implements ActionListener, WindowChangeListener
 			activeWindow.getTabs().getActiveTab().refresh();
 		else if ("Enter Full Screen".equals(e.getActionCommand()) && activeWindow != null)
 			this.toggleFullScreenMode();
+		else if ("View Source".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.getTabs().openSourceCodeTab();
 
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();

@@ -26,7 +26,7 @@ public class AddressBar extends JTextField implements ActionListener
 	{
 		String address = getText();
 
-		if (! address.contains("://") && address.contains("."))
+		if (! address.contains("://") && address.contains(".") && ! address.startsWith("view-source:"))
 			address = "http://".concat(address);
 		
     	tab.goTo(address);

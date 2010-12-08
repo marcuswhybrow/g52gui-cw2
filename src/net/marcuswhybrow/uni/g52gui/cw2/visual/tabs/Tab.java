@@ -37,10 +37,12 @@ public class Tab extends JPanel implements Reopenable
 
 	private TabButton tabButton;
 
-	public enum TabType {WEB_PAGE, NEW_TAB_PAGE, BOOKMARK_MANAGER_PAGE, HISTORY_PAGE};
+	public enum TabType {WEB_PAGE, NEW_TAB_PAGE, BOOKMARK_MANAGER_PAGE, HISTORY_PAGE, VIEW_SOURCE};
 
 	private ArrayList<Page> history = new ArrayList<Page>();
 	private int currentLocation;
+
+	private TabType type;
 
 	public Tab(Tabs tabs, String address)
 	{
@@ -55,6 +57,7 @@ public class Tab extends JPanel implements Reopenable
 	public Tab(Tabs tabs, TabType type, String address)
 	{
 		this.tabs = tabs;
+		this.type = type;
 		
 		setLayout(new BorderLayout());
 
@@ -87,6 +90,8 @@ public class Tab extends JPanel implements Reopenable
 				this.addPageToHistory(new BrowserPage(BrowserPage.Type.HISTORY));
 				this.content = new HistoryTabContent(this);
 				break;
+			case VIEW_SOURCE:
+				this.content = new SourceCodeTabContent(this, address);
 		}
 
 		if (history.size() > 0)
@@ -137,6 +142,11 @@ public class Tab extends JPanel implements Reopenable
 		return title;
 	}
 
+	public TabType getTabType()
+	{
+		return this.type;
+	}
+
 	public void goTo(String address)
 	{
 		this.addAddressToHistory(address);
@@ -149,7 +159,7 @@ public class Tab extends JPanel implements Reopenable
 		{
 			toolBar.getAddressBar().updateAddress(address.toString());
 
-			if (address.toString().startsWith("http://"))
+			if (address.startsWith("http://"))
 			{
 				if (! (content instanceof WebPageTabContent))
 					setTabContent(new WebPageTabContent(this));
@@ -158,18 +168,22 @@ public class Tab extends JPanel implements Reopenable
 
 				title = address.toString().substring(7);
 			}
-			else if (address.toString().startsWith("browser://bookmarks"))
+			else if (address.startsWith("browser://bookmarks"))
 			{
 				if (! (content instanceof BookmarkManagerTabContent))
 					setTabContent(new BookmarkManagerTabContent(this));
 				title = "Bookmark Manager";
 			}
-			else if (address.toString().startsWith("browser://history"))
+			else if (address.startsWith("browser://history"))
 			{
 				if (! (content instanceof HistoryTabContent))
 					setTabContent(new HistoryTabContent(this));
 				title = "History";
 			}
+			else if (address.startsWith("view-source:"))
+				if (address.length() > 11)
+					if (! (content instanceof SourceCodeTabContent))
+						setTabContent(new SourceCodeTabContent(this, "http://".concat(address.substring(12))));
 		}
 	}
 
@@ -264,9 +278,9 @@ public class Tab extends JPanel implements Reopenable
 
 			if (address.toString().startsWith("http://"))
 				this.addPageToHistory(new Page(address));
-			else if (address.toString().startsWith("browser://bookmarks"))
+			else if (address.startsWith("browser://bookmarks"))
 				this.addPageToHistory(new BrowserPage(BrowserPage.Type.BOOKMARKS));
-			else if (address.toString().startsWith("browser://history"))
+			else if (address.startsWith("browser://history"))
 				this.addPageToHistory(new BrowserPage(BrowserPage.Type.HISTORY));
 		}
 	}

@@ -29,7 +29,7 @@ public class ViewMenu extends Menu implements SettingsChangeListener
 		add(alwaysShowBookmarksBar);
 
 		addSeparator();
-		addMenuItem("Stop", KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+//		addMenuItem("Stop", KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addMenuItem("Reload This Page", KeyStroke.getKeyStroke(KeyEvent.VK_R, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addSeparator();
 		addMenuItem("Enter Full Screen", KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.SHIFT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
