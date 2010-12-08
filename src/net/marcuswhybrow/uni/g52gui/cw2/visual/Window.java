@@ -8,6 +8,7 @@ import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 
@@ -19,6 +20,8 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 {
 	private Tabs tabs;
 	private StatusBar statusBar;
+
+	private ArrayList<WindowChangeListener> windowChangeListeners = new ArrayList<WindowChangeListener>();
 	
 	public Window()
 	{
@@ -149,5 +152,29 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 	public void openNewTab()
 	{
 		this.tabs.openNewTab();
+	}
+
+	@Override
+	public void setTitle(String title)
+	{
+		super.setTitle(title);
+		this.notifyWindowChangeListeners();
+	}
+
+
+	public void addWindowChangeListener(WindowChangeListener wcl)
+	{
+		this.windowChangeListeners.add(wcl);
+	}
+
+	public void removeWindowChangeListener(WindowChangeListener wcl)
+	{
+		this.windowChangeListeners.remove(wcl);
+	}
+
+	private void notifyWindowChangeListeners()
+	{
+		for (WindowChangeListener wcl : windowChangeListeners)
+			wcl.windowHasChanged();
 	}
 }

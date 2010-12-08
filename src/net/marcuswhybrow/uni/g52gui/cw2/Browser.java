@@ -29,6 +29,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.WindowChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -39,12 +40,13 @@ import org.xml.sax.SAXException;
  *
  * @author Marcus Whybrow
  */
-public class Browser implements ActionListener
+public class Browser implements ActionListener, WindowChangeListener
 {
 	private static Browser browser = null;
 
 	private ArrayList<Window> windows = new ArrayList<Window>();
 	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
+	private ArrayList<WindowsChangeListener> windowsChangeListeners = new ArrayList<WindowsChangeListener>();
 
 	private Frame activeFrame = null;
 	private Window activeWindow = null;
@@ -60,6 +62,11 @@ public class Browser implements ActionListener
 	private ImageIcon bookmarksIcon = null;
 	private ImageIcon historyIcon = null;
 	private ImageIcon folderIcon = null;
+
+	public void windowHasChanged()
+	{
+		this.notifyWindowsChangeListeners();
+	}
 
 	public enum OperatingSystem {WINDOWS, MAC, LINUX_OR_UNIX, OTHER};
 	private OperatingSystem os;
@@ -228,16 +235,21 @@ public class Browser implements ActionListener
 	public void openWindow()
 	{
 		Window window = new Window();
+		window.addWindowChangeListener(this);
 		windows.add(window);
 		setActiveFrame(window);
-//		window.openNewTab();
+		notifyWindowsChangeListeners();
 	}
 
 	public void setActiveFrame(Frame frame)
 	{
 		activeFrame = frame;
 		if (frame instanceof Window)
+		{
 			activeWindow = (Window) frame;
+			activeWindow.toFront();
+			this.notifyWindowsChangeListeners();
+		}
 	}
 
 	public void windowHasClosed(Window window)
@@ -373,6 +385,22 @@ public class Browser implements ActionListener
 	public ArrayList<Window> getWindows()
 	{
 		return this.windows;
+	}
+
+	public void addWindowsChangeListener(WindowsChangeListener wcl)
+	{
+		windowsChangeListeners.add(wcl);
+	}
+
+	public void removeWindowsChangeListener(WindowsChangeListener wcl)
+	{
+		windowsChangeListeners.remove(wcl);
+	}
+
+	private void notifyWindowsChangeListeners()
+	{
+		for (WindowsChangeListener wcl : windowsChangeListeners)
+			wcl.windowsHaveChanged(this.getWindows());
 	}
 
 	public static void main(String[] args)

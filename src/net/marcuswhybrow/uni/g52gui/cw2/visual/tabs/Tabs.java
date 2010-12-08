@@ -83,13 +83,13 @@ public class Tabs extends JTabbedPane implements ChangeListener
 
 	public void selectNextTab()
 	{
-		int nextTabIndex = this.tabs.indexOf(this.getActiveTab()) + 1;
+		int nextTabIndex = (this.tabs.indexOf(this.getActiveTab()) + 1) % this.tabs.size();
 		this.setActiveTab(this.tabs.get(nextTabIndex));
 	}
 
 	public void selectPreviousTab()
 	{
-		int nextTabIndex = this.tabs.indexOf(this.getActiveTab()) - 1;
+		int nextTabIndex = (this.tabs.indexOf(this.getActiveTab()) - 1) % this.tabs.size();
 		this.setActiveTab(this.tabs.get(nextTabIndex));
 	}
 

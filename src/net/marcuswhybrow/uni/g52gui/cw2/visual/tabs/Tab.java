@@ -207,6 +207,8 @@ public class Tab extends JPanel implements Reopenable
 
 	public void setTitle(String title)
 	{
+		if (tabs.getActiveTab() == this)
+			tabs.getWindow().setTitle(this.getCurrentLocation().getTitle());
 		this.title = title;
 		this.updateTabButtonTitle();
 	}
