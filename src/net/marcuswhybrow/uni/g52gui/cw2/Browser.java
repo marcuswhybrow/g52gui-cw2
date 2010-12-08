@@ -17,6 +17,7 @@ import java.util.Stack;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -325,6 +326,8 @@ public class Browser implements ActionListener, WindowChangeListener
 		else if ("Show Full History".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().openHistoryTab();
 
+		else if ("Minimise".equals(e.getActionCommand()) && activeWindow != null)
+			activeWindow.setState(JFrame.ICONIFIED);
 		else if ("Select Next Tab".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().selectNextTab();
 		else if ("Select Previous Tab".equals(e.getActionCommand()) && activeWindow != null)

@@ -27,8 +27,13 @@ public class WindowMenu extends Menu implements WindowsChangeListener
 	private void rebuild()
 	{
 		this.removeAll();
-		addMenuItem("Minimise", KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		addSeparator();
+
+		if (Browser.get().getOperatingSystem() == Browser.OperatingSystem.MAC)
+		{
+			addMenuItem("Minimise", KeyStroke.getKeyStroke(KeyEvent.VK_M, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+			addSeparator();
+		}
+		
 		addMenuItem("Select Next Tab", KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addMenuItem("Select Previous Tab", KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addSeparator();
