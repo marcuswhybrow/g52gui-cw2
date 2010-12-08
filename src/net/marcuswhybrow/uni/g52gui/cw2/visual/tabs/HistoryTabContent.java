@@ -1,21 +1,15 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
-import com.ucware.icontools.IconTools;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -94,11 +88,8 @@ public class HistoryTabContent extends JScrollPane implements TabContent, ListCe
 
 		JLabel label = new JLabel();
 		label.setIconTextGap(12);
-		label.setText(item.getTitle());
-
-		Icon favIcon = item.getFavIcon();
-		if (favIcon != null)
-			label.setIcon(favIcon);
+		label.setText(item.getPage().getTitle());
+		label.setIcon(item.getPage().getFavIcon());
 		panel.add(label);
 
 		return panel;

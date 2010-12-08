@@ -4,9 +4,8 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
 import net.marcuswhybrow.uni.g52gui.cw2.menu.MenuBar;
-import com.apple.eawt.AppEvent.PreferencesEvent;
-import com.apple.eawt.PreferencesHandler;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -51,6 +51,8 @@ public class Browser implements ActionListener
 	private Settings settings;
 
 	private Image icon;
+	private ImageIcon tabLoadingIcon = null;
+	private ImageIcon tabFavIcon = null;
 
 	public enum OperatingSystem {WINDOWS, MAC, LINUX_OR_UNIX, OTHER};
 	private OperatingSystem os;
@@ -70,35 +72,23 @@ public class Browser implements ActionListener
 			this.os = OperatingSystem.OTHER;
 	}
 
-	private void determineIcon()
+	private void determineIcons()
 	{
-		try
-		{
-			icon = ImageIO.read(getClass().getClassLoader().getResource("net/marcuswhybrow/uni/g52gui/cw2/assets/icon.png"));
-		}
-		catch (IOException ex)
-		{
-			System.err.println("Couldn't find the Browser icon image");
-		}
-	}
+		icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/icon.png"));
 
-	private void doMacSpecificSetup()
-	{
-		com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-		app.setDockIconImage(this.getIcon());
-		app.setDefaultMenuBar(new MenuBar());
-		app.setPreferencesHandler(new PreferencesHandler() {
-			public void handlePreferences(PreferencesEvent pe)
-			{
-				Settings.get().showSettings();
-			}
-		});
+		Image i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabFavIcon.png"));
+		if (i != null)
+			tabFavIcon = new ImageIcon(i);
+
+		i = Toolkit.getDefaultToolkit().getImage(getClass().getResource("assets/tabLoadingIcon.gif"));
+		if (i != null)
+			tabLoadingIcon = new ImageIcon(i);
 	}
 
 	private void setup()
 	{
 		this.determineOperatingSystem();
-		this.determineIcon();
+		this.determineIcons();
 
 		this.bookmarksBar = readFromFile("bookmarks_bar.xml");
 		this.otherBookmarks = readFromFile("other_bookmarks.xml");
@@ -111,7 +101,7 @@ public class Browser implements ActionListener
 		switch (os)
 		{
 			case MAC:
-				this.doMacSpecificSetup();
+				AppleStuff.go();
 				break;
 			case WINDOWS:
 				break;
@@ -299,6 +289,9 @@ public class Browser implements ActionListener
 		else if ("Bookmark Manager".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().openBookmarkManagerTab();
 
+		else if ("Preferences".equals(e.getActionCommand()))
+			Settings.get().showSettings();
+
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
 		else if ("Back".equals(e.getActionCommand()) && activeWindow != null)
@@ -322,6 +315,16 @@ public class Browser implements ActionListener
 	public Image getIcon()
 	{
 		return this.icon;
+	}
+
+	public ImageIcon getTabLoadingIcon()
+	{
+		return this.tabLoadingIcon;
+	}
+
+	public ImageIcon getTabFavIcon()
+	{
+		return this.tabFavIcon;
 	}
 
 	public static void main(String[] args)

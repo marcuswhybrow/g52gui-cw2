@@ -1,6 +1,5 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
-import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -8,6 +7,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.Icon;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
@@ -15,7 +17,13 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLFrameHyperlinkEvent;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
+import net.marcuswhybrow.uni.g52gui.cw2.Utils;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.StatusBar;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.ToolBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 
 /**
@@ -30,8 +38,10 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 	public static enum State {EMPTY, WAITING, LOADING, DONE};
 	private State state = State.EMPTY;
 
-	private ArrayList<URL> history = new ArrayList<URL>();
+	private ArrayList<Page> history = new ArrayList<Page>();
 	private int currentLocation;
+
+	private URL lastURL;
 
 	public WebPageTabContent(Tab tab)
 	{
@@ -46,13 +56,19 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		{
 			try
 			{
-				this.pane = new EditorPane(address);
+				this.addAddressToHistory(new URL(address));
+
+				try
+				{
+					this.pane = new EditorPane(address);
+				}
+				catch (IOException ioe)
+				{
+					System.err.println(ioe);
+					this.pane = new EditorPane();
+				}
 			}
-			catch (IOException ioe)
-			{
-				System.err.println(ioe);
-				this.pane = new EditorPane();
-			}
+			catch (MalformedURLException ex){}
 		}
 		else
 			this.pane = new EditorPane();
@@ -61,6 +77,10 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		this.setViewportView(pane);
 		this.pane.addHyperlinkListener(this);
 		this.pane.addPropertyChangeListener(this);
+
+		ToolBar tb = this.tab.getToolBar();
+		AddressBar ab = tb.getAddressBar();
+		ab.setText(address);
 	}
 
 	public void hyperlinkUpdate(HyperlinkEvent e)
@@ -103,11 +123,17 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			this.history.remove(this.currentLocation + 1);
 	}
 
-	public void goTo(URL location)
+	private void addAddressToHistory(URL address)
 	{
 		this.removeFutureLocationsFromHistory();
-		this.history.add(location);
+		this.history.add(new Page(address));
 		this.currentLocation = history.size() - 1;
+	}
+
+	public void goTo(URL location)
+	{
+		this.lastURL = location;
+		this.addAddressToHistory(location);
 
 		try
 		{
@@ -143,9 +169,9 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 			try
 			{
 				this.currentLocation = index;
-				URL location = history.get(index);
-				this.pane.setPage(location);
-				this.tab.getToolBar().getAddressBar().setText(location.toString());
+				Page page = history.get(index);
+				this.pane.setPage(page.getAddress().toString());
+				this.tab.getToolBar().getAddressBar().setText(page.getAddress().toString());
 			}
 			catch (IOException ex)
 			{
@@ -164,8 +190,10 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 		}
 	}
 
-	public URL getCurrentLocation()
+	public Page getCurrentLocation()
 	{
+		System.out.println(history.size());
+		System.out.println(this.currentLocation);
 		try
 		{
 			return this.history.get(this.currentLocation);
@@ -210,26 +238,34 @@ public class WebPageTabContent extends JScrollPane implements TabContent, Hyperl
 	public void setState(State state)
 	{
 		this.state = state;
-		URL l;
+		Page page;
 		switch (this.state)
 		{
 			case EMPTY:
 				break;
 			case WAITING:
-				l = this.getCurrentLocation();
-				if (l != null)
-					this.getWindow().getStatusBar().setImportantText("Waiting for " + l.getHost());
+				page = this.getCurrentLocation();
+				if (page != null)
+				{
+					Window w = this.getWindow();
+					StatusBar sb = w.getStatusBar();
+					String s = "Waiting for " + page.getAddress().getHost();
+					sb.setImportantText(s);
+				}
 				break;
 			case LOADING:
-				l = this.getCurrentLocation();
-				if (l != null)
-					this.getWindow().getStatusBar().setImportantText("Transfering data from " + l.getHost());
-				this.tab.setTitle("loading ...");
+				page = this.getCurrentLocation();
+				if (page != null)
+					this.getWindow().getStatusBar().setImportantText("Transfering data from " + page.getAddress().getHost());
+				this.tab.getTabButton().setIcon(Browser.get().getTabLoadingIcon());
 				break;
 			case DONE:
+				page = this.getCurrentLocation();
 				this.getWindow().getStatusBar().doneWithImportantText();
+				page.setTitle(this.getWebPageTitle());
 				this.tab.setTitle(this.getShortenedWebPageTitle());
-				History.get().addHistoryEntry(this.getWebPageTitle(), this.pane.getPage());
+				this.tab.getTabButton().setIcon(page.getFavIcon());
+				History.get().addHistoryEntry(page);
 				break;
 		}
 	}

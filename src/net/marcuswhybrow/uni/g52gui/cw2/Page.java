@@ -1,11 +1,7 @@
-package net.marcuswhybrow.uni.g52gui.cw2.history;
+package net.marcuswhybrow.uni.g52gui.cw2;
 
-import com.ucware.icontools.IconTools;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.Icon;
-import net.marcuswhybrow.uni.g52gui.cw2.Utils;
 
 /**
  *
@@ -16,6 +12,11 @@ public class Page
 	private URL address;
 	private String title;
 	private Icon favIcon;
+
+	public Page(URL address)
+	{
+		this(address, address.toString(), null);
+	}
 
 	public Page(URL address, String title)
 	{
@@ -37,14 +38,25 @@ public class Page
 		return address;
 	}
 
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
+
 	public String getTitle()
 	{
 		return title;
 	}
 
+	public void setFavIcon(Icon favIcon)
+	{
+		this.favIcon = favIcon;
+	}
+
 	public Icon getFavIcon()
 	{
-		return favIcon;
+		System.out.println(favIcon);
+		return favIcon != null ? favIcon : Browser.get().getTabFavIcon();
 	}
 
 	@Override

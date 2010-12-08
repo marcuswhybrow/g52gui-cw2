@@ -1,6 +1,5 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
-import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,10 +13,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicButtonUI;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 
 /**
  *
@@ -58,6 +60,13 @@ public class TabButton extends JPanel
 	public void setTitle(String title)
 	{
 		label.setText(title);
+	}
+
+	public void setIcon(Icon icon)
+	{
+		label.setIcon(icon);
+		if (icon instanceof ImageIcon)
+			((ImageIcon) icon).setImageObserver(label);
 	}
 
 	private class CloseTabButton extends JButton implements ActionListener, MouseListener

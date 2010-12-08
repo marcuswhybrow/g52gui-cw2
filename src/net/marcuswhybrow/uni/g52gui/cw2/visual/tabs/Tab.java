@@ -2,6 +2,10 @@ package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
@@ -19,7 +23,6 @@ public class Tab extends JPanel implements Reopenable
 	protected Tabs tabs;
 	protected String title;
 	protected boolean isClosed;
-	protected String address;
 	
 	private TabContent content;
 	private AddressBar addressBar;
@@ -43,6 +46,10 @@ public class Tab extends JPanel implements Reopenable
 	{
 		this.tabs = tabs;
 		
+		setLayout(new BorderLayout());
+		toolBar = new ToolBar(this);
+		add(toolBar, BorderLayout.NORTH);
+
 		switch (type)
 		{
 			case WEB_PAGE:
@@ -62,11 +69,7 @@ public class Tab extends JPanel implements Reopenable
 				this.title = "History";
 				break;
 		}
-		setLayout(new BorderLayout());
-//		addressBar = new AddressBar(this);
-		toolBar = new ToolBar(this);
-//		add(addressBar, BorderLayout.NORTH);
-		add(toolBar, BorderLayout.NORTH);
+
 		add((Component) this.content, BorderLayout.CENTER);
 
 		tabButton = new TabButton(this, title);
@@ -77,6 +80,9 @@ public class Tab extends JPanel implements Reopenable
 	private void updateTabButtonTitle()
 	{
 		tabButton.setTitle(title);
+
+//		if (content instanceof WebPageTabContent)
+//			tabButton.setIcon(((WebPageTabContent) content).getCurrentLocation().getFavIcon());
 	}
 
 	public TabContent getTabContent()
@@ -104,35 +110,35 @@ public class Tab extends JPanel implements Reopenable
 		return title;
 	}
 
-	public String getAddress()
+	public void goTo(String address)
 	{
-		return address;
+		try
+		{
+			goTo(new URL(address));
+		}
+		catch (MalformedURLException ex) {}
 	}
 
-	public void goTo(String address)
+	public void goTo(URL address)
 	{
 		if (address != null)
 		{
-			toolBar.getAddressBar().updateAddress(address);
+			toolBar.getAddressBar().updateAddress(address.toString());
 
-			// The address bar can change the address (for example add http://)
-			this.address = toolBar.getAddressBar().getText();
-
-			
-			if (address.startsWith("http://"))
+			if (address.toString().startsWith("http://"))
 			{
 				if (! (content instanceof WebPageTabContent))
 					setTabContent(new WebPageTabContent(this));
-				
+
 				((WebPageTabContent) content).goTo(address);
 
-				title = address.substring(7);
+				title = address.toString().substring(7);
 			}
-			else if (address.startsWith("browser://bookmarks"))
+			else if (address.toString().startsWith("browser://bookmarks"))
 			{
 				if (! (content instanceof BookmarkManagerTabContent))
 					setTabContent(new BookmarkManagerTabContent(this));
-				
+
 				title = "Bookmark Manager";
 			}
 		}

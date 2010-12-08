@@ -7,6 +7,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.Icon;
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.Utils;
 
 /**
@@ -15,18 +16,13 @@ import net.marcuswhybrow.uni.g52gui.cw2.Utils;
  */
 public class HistoryEntry
 {
-	private URL address;
+	private Page page;
 	private Date date;
-	private String title;
-	private Icon favIcon = null;
 
-	public HistoryEntry(String title, URL address)
+	public HistoryEntry(Page page)
 	{
-		this.title = title;
-		this.address = address;
+		this.page = page;
 		this.date = new Date();
-
-		this.favIcon = Utils.getFavIconForURL(address);
 	}
 
 	public String getDateString()
@@ -39,14 +35,9 @@ public class HistoryEntry
 		return new SimpleDateFormat("HH:mm:ss").format(this.getDate());
 	}
 
-	public String getTitle()
+	public Page getPage()
 	{
-		return title;
-	}
-
-	public URL getAddress()
-	{
-		return address;
+		return page;
 	}
 
 	public Date getDate()
@@ -54,14 +45,9 @@ public class HistoryEntry
 		return date;
 	}
 
-	public Icon getFavIcon()
-	{
-		return this.favIcon;
-	}
-
 	@Override
 	public String toString()
 	{
-		return title;
+		return page.getTitle();
 	}
 }

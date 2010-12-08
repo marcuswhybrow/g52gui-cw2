@@ -17,11 +17,14 @@ import net.marcuswhybrow.uni.g52gui.cw2.Browser;
  */
 public class Window extends JFrame implements WindowListener, Reopenable, Frame
 {
-	private Tabs tabs = new Tabs(this);
-	private StatusBar statusBar = new StatusBar(this);
+	private Tabs tabs;
+	private StatusBar statusBar;
 	
 	public Window()
 	{
+		this.statusBar = new StatusBar(this);
+		this.tabs = new Tabs(this);
+
 		Container pane = this.getContentPane();
 		pane.setLayout(new BorderLayout());
 		
@@ -49,6 +52,8 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 		}
 		else
 			this.setLocationRelativeTo(null);
+
+		this.setIconImage(Browser.get().getIcon());
 
 //		this.tabs.openWebPageTab();
 		this.setVisible(true);

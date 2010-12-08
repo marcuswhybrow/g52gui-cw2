@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.history;
 
+import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,11 +40,9 @@ public class History implements Iterable<HistoryEntry>
 		return h;
 	}
 
-	public void addHistoryEntry(String title, URL address)
+	public void addHistoryEntry(Page page)
 	{
-		history.add(new HistoryEntry(title, address));
-
-		Page page = new Page(address, title);
+		history.add(new HistoryEntry(page));
 
 		Integer countForAddress = visitCount.get(page);
 		if (countForAddress == null)
