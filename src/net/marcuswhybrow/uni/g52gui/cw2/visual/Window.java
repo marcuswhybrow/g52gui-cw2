@@ -20,13 +20,35 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 {
 	private Tabs tabs;
 	private StatusBar statusBar;
+	private Window originalWindow;
 
 	private ArrayList<WindowChangeListener> windowChangeListeners = new ArrayList<WindowChangeListener>();
 	
+	
 	public Window()
 	{
+		setup(null);
+		this.setVisible(true);
+	}
+
+	public Window(Window window)
+	{
+		this.originalWindow = window;
+		setup(window);
+	}
+	
+	public void setup(Window window)
+	{
+		if (window != null)
+		{
+			this.setUndecorated(true);
+			window.getTabs().setWindow(window);
+		}
+
 		this.statusBar = new StatusBar(this);
-		this.tabs = new Tabs(this);
+		this.tabs = window != null ? window.getTabs() : new Tabs(this);
+
+
 
 		Container pane = this.getContentPane();
 		pane.setLayout(new BorderLayout());
@@ -34,7 +56,7 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 		pane.add(tabs, BorderLayout.CENTER);
 		pane.add(statusBar, BorderLayout.SOUTH);
 
-		setTitle("Window");
+		setTitle(window != null ? window.getTitle() : "Window");
 		pack();
 
 		setJMenuBar(new MenuBar());
@@ -45,9 +67,9 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 		addWindowListener(this);
 		this.setSize(800, 600);
 
-		Window window = Browser.get().getActiveWindow();
+		Window w = Browser.get().getActiveWindow();
 
-		if (window != null)
+		if (w != null)
 		{
 			this.setLocationRelativeTo(Browser.get().getActiveWindow());
 			Point location = this.getLocation();
@@ -58,10 +80,7 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 
 		this.setIconImage(Browser.get().getIcon());
 
-//		this.tabs.openWebPageTab();
 		this.setVisible(true);
-//		this.tabs.getActiveTab().goTo(Settings.get().getHomePage());
-//		this.tabs.openNewTab();
 	}
 
 	public void goTo(String url)
@@ -176,5 +195,20 @@ public class Window extends JFrame implements WindowListener, Reopenable, Frame
 	{
 		for (WindowChangeListener wcl : windowChangeListeners)
 			wcl.windowHasChanged();
+	}
+
+
+	public Window getOriginalWindow()
+	{
+		return this.originalWindow;
+	}
+
+	public void setTabs(Tabs tabs)
+	{
+		this.tabs = tabs;
+		this.remove(tabs);
+		this.add(tabs, BorderLayout.CENTER);
+		tabs.setWindow(this);
+		this.validate();
 	}
 }

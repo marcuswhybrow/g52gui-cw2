@@ -1,7 +1,7 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.BorderLayout;
+import java.awt.GraphicsEnvironment;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
@@ -14,10 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,7 +31,6 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.WindowChangeListener;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -51,6 +50,7 @@ public class Browser implements ActionListener, WindowChangeListener
 
 	private Frame activeFrame = null;
 	private Window activeWindow = null;
+	private Window fullScreenWindow = null;
 
 	private Folder bookmarksBar;
 	private Folder otherBookmarks;
@@ -318,6 +318,26 @@ public class Browser implements ActionListener, WindowChangeListener
 			Settings.get().setAlwaysShowBookmarksBar(((JCheckBoxMenuItem) e.getSource()).isSelected());
 		else if ("Reload This Page".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().refresh();
+		else if ("Enter Full Screen".equals(e.getActionCommand()) && activeWindow != null)
+		{
+			if (fullScreenWindow == null)
+			{
+				activeWindow.setVisible(false);
+				fullScreenWindow = new Window(activeWindow);
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(fullScreenWindow);
+			}
+			else
+			{
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
+
+				Window originalWindow = fullScreenWindow.getOriginalWindow();
+				originalWindow.setTabs(fullScreenWindow.getTabs());
+
+				fullScreenWindow.close();
+				fullScreenWindow = null;
+				originalWindow.setVisible(true);
+			}
+		}
 
 		else if ("Home".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().home();
@@ -427,5 +447,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		def.put("Tree.leafIcon", def.get("Tree.closedIcon"));
 
 		Browser.get();
+
+		System.out.println("Is fullscreen supported " + GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().isFullScreenSupported());
 	}
 }

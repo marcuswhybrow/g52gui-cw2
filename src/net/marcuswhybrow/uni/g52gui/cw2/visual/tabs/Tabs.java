@@ -135,4 +135,9 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	{
 		return this.tabs;
 	}
+
+	public void setWindow(Window window)
+	{
+		this.window = window;
+	}
 }

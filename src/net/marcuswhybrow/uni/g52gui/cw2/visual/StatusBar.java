@@ -74,4 +74,9 @@ public class StatusBar extends JPanel
 		this.state = State.FREE;
 		importantClear();
 	}
+
+	public void setWindow(Window window)
+	{
+		this.window = window;
+	}
 }
