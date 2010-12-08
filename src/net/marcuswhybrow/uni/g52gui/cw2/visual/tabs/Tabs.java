@@ -9,7 +9,6 @@ import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.Settings;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab.TabType;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 
 /**
  *
@@ -128,6 +127,8 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	public void stateChanged(ChangeEvent e)
 	{
 		activeTab = (Tab) getSelectedComponent();
+		if (activeTab.getCurrentLocation() != null)
+			window.setTitle(activeTab.getCurrentLocation().getTitle());
 	}
 
 	public ArrayList<Tab> getAllTabs()
