@@ -1,6 +1,7 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
 import java.util.ArrayList;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -80,6 +81,7 @@ public class Folder implements BookmarkItem
 		{
 			children.add(item);
 			item.setParent(this);
+			this.hasChanged();
 		}
 	}
 
@@ -106,6 +108,7 @@ public class Folder implements BookmarkItem
 	public void setName(String name)
 	{
 		this.name = name;
+		this.hasChanged();
 	}
 
 	public BookmarkItem[] getChildren()
@@ -117,12 +120,15 @@ public class Folder implements BookmarkItem
 	void removeChild(BookmarkItem item)
 	{
 		children.remove(item);
+		this.hasChanged();
 	}
 
 	public void delete() throws CannotDeleteRootFolderExcetpion
 	{
 		if (!isRoot())
+		{
 			parent.removeChild(this);
+		}
 		else
 			throw new CannotDeleteRootFolderExcetpion();
 	}

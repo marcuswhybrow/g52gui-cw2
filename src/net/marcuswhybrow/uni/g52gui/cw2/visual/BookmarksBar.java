@@ -1,33 +1,25 @@
 package net.marcuswhybrow.uni.g52gui.cw2.visual;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.Settings;
 import net.marcuswhybrow.uni.g52gui.cw2.SettingsChangeListener;
-import net.marcuswhybrow.uni.g52gui.cw2.Utils;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 
@@ -35,7 +27,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
  *
  * @author marcus
  */
-public class BookmarksBar extends JPanel implements SettingsChangeListener
+public class BookmarksBar extends JPanel implements SettingsChangeListener, FolderChangeListener
 {
 	private Tab tab;
 
@@ -43,6 +35,8 @@ public class BookmarksBar extends JPanel implements SettingsChangeListener
 	{
 		this.tab = tab;
 		Settings.get().addSettingsChangeListener(this);
+		Browser.get().getBookmarksBarBookmarks().addFolderChangeListener(this);
+		Browser.get().getOtherBookmarksBookmarks().addFolderChangeListener(this);
 
 		setVisible(Settings.get().getAlwaysShowBookmarksBar());
 		
@@ -67,6 +61,11 @@ public class BookmarksBar extends JPanel implements SettingsChangeListener
 				add(new BookmarksBarFolder((Folder) item));
 		}
 		this.validate();
+	}
+
+	public void notifyFolderHasChanged(Folder folder)
+	{
+		this.rebuild();
 	}
 
 	private class BookmarksBarBookmark extends JButton implements ActionListener

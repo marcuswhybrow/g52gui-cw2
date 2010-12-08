@@ -20,7 +20,6 @@ import java.util.Stack;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
-import javax.swing.JRootPane;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.AddBookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
@@ -331,8 +331,11 @@ public class Browser implements ActionListener, WindowChangeListener
 			openLastClosedItem();
 		else if ("Open Location".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().getActiveTab().getAddressBar().requestFocus();
+
 		else if ("Bookmark Manager".equals(e.getActionCommand()) && activeWindow != null)
 			activeWindow.getTabs().openBookmarkManagerTab();
+		else if ("Bookmark This Page...".equals(e.getActionCommand()) && activeWindow != null)
+			new AddBookmark(activeWindow.getTabs().getActiveTab().getCurrentLocation());
 
 		else if ("Preferences".equals(e.getActionCommand()))
 			Settings.get().showSettings();
@@ -482,6 +485,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		for (ClosedItemsChangeListener cicl : closedItemsChangeListeners)
 			cicl.closedItemsHaveChanged(closedItems);
 	}
+
 
 	public static void main(String[] args)
 	{

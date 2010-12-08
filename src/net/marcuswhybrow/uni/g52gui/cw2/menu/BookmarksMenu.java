@@ -10,17 +10,28 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderMenuItem;
 
 /**
  *
  * @author marcus
  */
-public class BookmarksMenu extends Menu
+public class BookmarksMenu extends Menu implements FolderChangeListener
 {
 	public BookmarksMenu()
 	{
 		super("Bookmarks");
+
+		Browser.get().getBookmarksBarBookmarks().addFolderChangeListener(this);
+		Browser.get().getOtherBookmarksBookmarks().addFolderChangeListener(this);
+
+		this.rebuild();
+	}
+
+	private void rebuild()
+	{
+		this.removeAll();
 
 		addMenuItem("Bookmark Manager", KeyStroke.getKeyStroke(KeyEvent.VK_B, KeyEvent.ALT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addMenuItem("Bookmark This Page...", KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -29,7 +40,7 @@ public class BookmarksMenu extends Menu
 
 		for (BookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
 			addItem(this, item);
-		
+
 		addSeparator();
 
 		Menu otherBookmarks = new Menu("Other Bookmarks");
@@ -38,6 +49,8 @@ public class BookmarksMenu extends Menu
 		for (BookmarkItem item : f.getChildren())
 			addItem(otherBookmarks, item);
 		add(otherBookmarks);
+
+		this.validate();
 	}
 
 	private void addItem(JMenu menu, BookmarkItem item)
@@ -60,5 +73,10 @@ public class BookmarksMenu extends Menu
 		}
 		else
 			menu.add(new BookmarkMenuItem((Bookmark) item));
+	}
+
+	public void notifyFolderHasChanged(Folder folder)
+	{
+		this.rebuild();
 	}
 }
