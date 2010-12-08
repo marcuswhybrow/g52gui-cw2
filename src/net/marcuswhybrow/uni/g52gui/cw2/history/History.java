@@ -72,7 +72,7 @@ public class History implements Iterable<HistoryEntry>
 			visitCount.put(page, countForAddress + 1);
 	}
 
-	private void notifyHistoryChangeListeners()
+	public void notifyHistoryChangeListeners()
 	{
 		for (HistoryChangeListener hcl : historyChangeListeners)
 		{
@@ -110,4 +110,5 @@ public class History implements Iterable<HistoryEntry>
 	{
 		this.historyChangeListeners.remove(hcl);
 	}
+	
 }

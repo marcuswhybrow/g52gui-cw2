@@ -2,11 +2,8 @@ package net.marcuswhybrow.uni.g52gui.cw2.menu;
 
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Stack;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
@@ -15,7 +12,6 @@ import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
 import net.marcuswhybrow.uni.g52gui.cw2.ClosedItemsChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
@@ -37,10 +33,13 @@ public class HistoryMenu extends Menu implements HistoryChangeListener, ClosedIt
 	{
 		super("History");
 
-		this.rebuild();
-
 		History.get().addHistoryChangeListener(this);
 		Browser.get().addClosedItemsChangeListener(this);
+		
+		// Ensure that history has been loaded!
+		History.get().notifyHistoryChangeListeners();
+
+		this.rebuild();
 	}
 
 	private void rebuild()
