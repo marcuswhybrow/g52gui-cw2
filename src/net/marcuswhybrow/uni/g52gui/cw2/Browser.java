@@ -15,13 +15,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Stack;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileSystemView;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -67,7 +70,7 @@ public class Browser implements ActionListener, WindowChangeListener
 	private ImageIcon tabFavIcon = null;
 	private ImageIcon bookmarksIcon = null;
 	private ImageIcon historyIcon = null;
-	private ImageIcon folderIcon = null;
+	private Icon folderIcon = null;
 
 	public void windowHasChanged()
 	{
@@ -99,7 +102,16 @@ public class Browser implements ActionListener, WindowChangeListener
 		bookmarksIcon = getImageIcon("assets/bookmarksIcon.png");
 		tabFavIcon = getImageIcon("assets/tabFavIcon.png");
 		tabLoadingIcon = getImageIcon("assets/tabLoadingIcon.gif");
-		folderIcon = getImageIcon("assets/folderIcon.png");
+
+
+//		folderIcon = getImageIcon("assets/folderIcon.png");
+
+		// This gets the systems default folder icon
+		try
+		{
+			folderIcon = FileSystemView.getFileSystemView().getSystemIcon(new File(getClass().getResource(".").toURI()));
+		}
+		catch (URISyntaxException ex) {}
 	}
 
 	private ImageIcon getImageIcon(String location)
@@ -423,7 +435,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		return this.bookmarksIcon;
 	}
 
-	public ImageIcon getFolderIcon()
+	public Icon getFolderIcon()
 	{
 		return this.folderIcon;
 	}

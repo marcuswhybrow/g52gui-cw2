@@ -1,21 +1,27 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -32,7 +38,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderE
 public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 {
 	private FolderTree bookmarksTree;
-	private JTree bookmarksList;
+	private JList bookmarksList;
 	private ContextMenu contextMenu;
 	private Tab tab;
 
@@ -68,17 +74,126 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 		this.tab = tab;
 	}
 
-	private class FolderContents extends JTree
+	private class FolderContents extends JList implements ListCellRenderer
 	{
 		public FolderContents(Folder folder)
 		{
-			super(convertToNode(folder, false /* don't exlude things which arn't folders */, 1 /* Only 1 level of items */));
-			setRootVisible(false);
+			super(folder.getChildren());
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-			DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-//			renderer.setLeafIcon(null);
-			this.setCellRenderer(renderer);
+			this.setCellRenderer(this);
+
+			this.addMouseListener(new BookmarksListMouseAdapter(tab, bookmarksTree));
+			this.addKeyListener(new BookmarksListKeyAdapter(tab, this, bookmarksTree));
+		}
+
+		public Component getListCellRendererComponent(JList jlist, Object o, int index, boolean isSelected, boolean cellHasFocus)
+		{
+			JLabel label = null;
+			if (o instanceof Folder)
+				label = new JLabel(((Folder) o).getName(), Browser.get().getFolderIcon(), JLabel.LEFT);
+			else if (o instanceof Bookmark)
+			{
+				Bookmark bookmark = (Bookmark) o;
+				label = new JLabel(bookmark.getPage().getTitle(), bookmark.getPage().getFavIcon(), JLabel.LEFT);
+			}
+
+			if (label != null)
+			{
+				label.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+			}
+
+			if (isSelected)
+			{
+				label.setForeground(Color.BLUE);
+			}
+
+			return label;
+		}
+
+		private class BookmarksListMouseAdapter extends MouseAdapter
+		{
+			private Tab tab;
+			private FolderTree bookmarksTree;
+
+			public BookmarksListMouseAdapter(Tab tab, FolderTree bookmarksTree)
+			{
+				this.tab = tab;
+				this.bookmarksTree = bookmarksTree;
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				JList list = (JList) e.getSource();
+				if(e.getClickCount() == 2)
+				{
+					int index = list.locationToIndex(e.getPoint());
+					ListModel listModel = list.getModel();
+
+					BookmarkItem item = (BookmarkItem) listModel.getElementAt(index);
+					list.ensureIndexIsVisible(index);
+
+					if (item instanceof Bookmark)
+					{
+						Bookmark bookmark = (Bookmark) item;
+						tab.goTo(bookmark.getPage().getAddress());
+					}
+					else if (item instanceof Folder)
+						selectNodeUnderSelectedNodeByFolder((Folder) item);
+				}
+			}
+		}
+
+		private void selectNodeUnderSelectedNodeByFolder(Folder folder)
+		{
+			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode) bookmarksTree.getSelectionPath().getLastPathComponent();
+
+			for (int i = 0; i < dmtn.getChildCount(); i++)
+			{
+				DefaultMutableTreeNode dmtnChild = (DefaultMutableTreeNode) dmtn.getChildAt(i);
+				BookmarkItem compItem = (BookmarkItem) (dmtnChild).getUserObject();
+				if (compItem instanceof Folder && ((Folder) compItem).equals(folder))
+				{
+					bookmarksTree.setSelectionPath(new TreePath(dmtnChild.getPath()));
+					bookmarksTree.scrollPathToVisible(new TreePath(dmtnChild.getPath()));
+					break;
+				}
+			}
+		}
+
+		private class BookmarksListKeyAdapter extends KeyAdapter
+		{
+			private Tab tab;
+			private JList list;
+			private FolderTree bookmarksTree;
+
+			public BookmarksListKeyAdapter(Tab tab, JList list, FolderTree bookmarksTree)
+			{
+				this.tab = tab;
+				this.list = list;
+				this.bookmarksTree = bookmarksTree;
+			}
+
+			@Override
+			public void keyPressed(KeyEvent ke)
+			{
+				ListModel listModel = list.getModel();
+				int index = list.getSelectedIndex();
+				BookmarkItem item = (BookmarkItem) listModel.getElementAt(index);
+				list.ensureIndexIsVisible(index);
+
+				if (ke.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					if (item instanceof Bookmark)
+					{
+						Bookmark bookmark = (Bookmark) item;
+						tab.goTo(bookmark.getPage().getAddress());
+					}
+					else if (item instanceof Folder)
+						selectNodeUnderSelectedNodeByFolder((Folder) item);
+				}
+			}
 		}
 	}
 
@@ -117,6 +232,14 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			});
 
 			addTreeSelectionListener(this);
+		}
+
+		public DefaultMutableTreeNode getSelectedNode()
+		{
+			TreePath path = getSelectionPath();
+			if (path != null)
+				return (DefaultMutableTreeNode) path.getLastPathComponent();
+			return null;
 		}
 
 		public Folder getSelectedFolder()
@@ -320,20 +443,5 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			}
 		}
 		return node;
-	}
-
-	public void refresh()
-	{
-		// do nothing
-	}
-
-	public void back()
-	{
-		// do nothing
-	}
-
-	public void forward()
-	{
-		// do nothing
 	}
 }
