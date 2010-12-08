@@ -15,7 +15,6 @@ public class NewTabTabContent extends JScrollPane implements TabContent
 	public NewTabTabContent(Tab tab)
 	{
 		this.tab = tab;
-		this.setViewportView(new JLabel("New Tab Page"));
 	}
 
 	public Component getContent()
