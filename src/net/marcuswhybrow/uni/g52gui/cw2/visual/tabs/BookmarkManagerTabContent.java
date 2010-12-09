@@ -281,14 +281,14 @@ public class BookmarkManagerTabContent extends JSplitPane implements ITabContent
 
 		public ContextMenu()
 		{
-			addMenuItem(openAllBookmarks);
-			addMenuItem(openAllBookmarksInNewWindow);
+//			addMenuItem(openAllBookmarks);
+//			addMenuItem(openAllBookmarksInNewWindow);
 			
 			addSeparator();
 			addMenuItem(rename);
 			addMenuItem(edit);
 
-			addSeparator();
+//			addSeparator();
 //			addMenuItem(cut);
 //			addMenuItem(copy);
 //			addMenuItem(paste);

@@ -133,7 +133,7 @@ public class Tabs extends JTabbedPane implements ChangeListener
 	public void stateChanged(ChangeEvent e)
 	{
 		activeTab = (Tab) getSelectedComponent();
-		if (activeTab.getCurrentLocation() != null)
+		if (activeTab != null && activeTab.getCurrentLocation() != null)
 			window.setTitle(activeTab.getCurrentLocation().getTitle());
 	}
 

@@ -46,10 +46,7 @@ public class Utils
 		catch (IOException ex) {
 			System.err.println("favIcon error in IO");
 		}
-		catch (IllegalArgumentException iaex)
-		{
-			System.err.println("favIcon error was not an Icon");
-		}
+		catch (IllegalArgumentException iaex) {}
 		
 		return null;
 	}
