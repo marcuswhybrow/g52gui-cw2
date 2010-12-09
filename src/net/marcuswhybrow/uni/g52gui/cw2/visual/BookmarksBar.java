@@ -14,12 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.Settings;
-import net.marcuswhybrow.uni.g52gui.cw2.SettingsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.SettingsChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.IBookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 
@@ -53,7 +53,7 @@ public class BookmarksBar extends JPanel implements SettingsChangeListener, Fold
 	public void rebuild()
 	{
 		this.removeAll();
-		for (BookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
+		for (IBookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
 		{
 			if (item instanceof Bookmark)
 				add(new BookmarksBarBookmark((Bookmark) item));
@@ -172,7 +172,7 @@ public class BookmarksBar extends JPanel implements SettingsChangeListener, Fold
 				this.folder = folder;
 
 				if (this.folder.getChildren().length > 0)
-					for (BookmarkItem item : this.folder.getChildren())
+					for (IBookmarkItem item : this.folder.getChildren())
 						this.addItem(this, item);
 				else
 				{
@@ -182,16 +182,16 @@ public class BookmarksBar extends JPanel implements SettingsChangeListener, Fold
 				}
 			}
 
-			private void addItem(JComponent menu, BookmarkItem item)
+			private void addItem(JComponent menu, IBookmarkItem item)
 			{
 				if (item instanceof Folder)
 				{
 					Folder f = (Folder) item;
 					FolderMenuItem newMenu = new FolderMenuItem(f);
 					menu.add(newMenu);
-					BookmarkItem[] children = f.getChildren();
+					IBookmarkItem[] children = f.getChildren();
 					if (children.length > 0)
-						for (BookmarkItem newItem : f.getChildren())
+						for (IBookmarkItem newItem : f.getChildren())
 							addItem(newMenu, newItem);
 					else
 					{

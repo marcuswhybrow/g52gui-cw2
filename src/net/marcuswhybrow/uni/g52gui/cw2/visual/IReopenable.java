@@ -5,7 +5,7 @@ package net.marcuswhybrow.uni.g52gui.cw2.visual;
  *
  * @author Marcus Whybrow
  */
-public interface Reopenable
+public interface IReopenable
 {
 	/**
 	 * Reopen the window or tab which was closed

@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
  *
  * @author Marcus Whybrow
  */
-public class Bookmark implements BookmarkItem
+public class Bookmark implements IBookmarkItem
 {
 	private Page page;
 	private Folder parent;

@@ -7,11 +7,10 @@ import javax.swing.JPanel;
 import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.AddressBar;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.IReopenable;
 import net.marcuswhybrow.uni.g52gui.cw2.Settings;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.ToolBar;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkManagerTabContent;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.BookmarksBar;
 
@@ -19,13 +18,13 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.BookmarksBar;
  *
  * @author Marcus Whybrow
  */
-public class Tab extends JPanel implements Reopenable
+public class Tab extends JPanel implements IReopenable
 {
 	protected Tabs tabs;
 	protected String title;
 	protected boolean isClosed;
 	
-	private TabContent content;
+	private ITabContent content;
 	private ToolBar toolBar;
 	private BookmarksBar bookmarksBar;
 
@@ -113,12 +112,12 @@ public class Tab extends JPanel implements Reopenable
 //			tabButton.setIcon(((WebPageTabContent) content).getCurrentLocation().getFavIcon());
 	}
 
-	public TabContent getTabContent()
+	public ITabContent getTabContent()
 	{
 		return content;
 	}
 
-	public void setTabContent(TabContent tabContent)
+	public void setTabContent(ITabContent tabContent)
 	{
 		if (this.content != null)
 			remove((Component) this.content);

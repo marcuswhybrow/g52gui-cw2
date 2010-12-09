@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import net.marcuswhybrow.uni.g52gui.cw2.utils.Utils;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.Icon;

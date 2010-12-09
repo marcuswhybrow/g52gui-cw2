@@ -4,10 +4,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
@@ -26,7 +23,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
  *
  * @author Marcus Whybrow
  */
-public class WebPageTabContent extends JScrollPane implements TabContent, HyperlinkListener, PropertyChangeListener
+public class WebPageTabContent extends JScrollPane implements ITabContent, HyperlinkListener, PropertyChangeListener
 {
 	private JEditorPane pane;
 	private Tab tab;

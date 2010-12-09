@@ -1,4 +1,4 @@
-package net.marcuswhybrow.uni.g52gui.cw2;
+package net.marcuswhybrow.uni.g52gui.cw2.utils;
 
 import com.ucware.icontools.IconTools;
 import java.io.IOException;
@@ -7,7 +7,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.Browser;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.IBookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
 
 /**
@@ -59,19 +60,19 @@ public class Utils
 		return new JComboBox(getComboBoxItemsForBookmarks(null));
 	}
 
-	public static Object[] getComboBoxItemsForBookmarks(BookmarkItem excludeMe)
+	public static Object[] getComboBoxItemsForBookmarks(IBookmarkItem excludeMe)
 	{
 		ArrayList<ComboBoxItem> options = new ArrayList<ComboBoxItem>();
 
 		options.add(new ComboBoxItem(Browser.get().getBookmarksBarBookmarks()));
 
-		for (BookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
+		for (IBookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
 			if (item != excludeMe)
 				addItem(options, item, 1);
 
 		options.add(new ComboBoxItem(Browser.get().getOtherBookmarksBookmarks()));
 
-		for (BookmarkItem item : Browser.get().getOtherBookmarksBookmarks().getChildren())
+		for (IBookmarkItem item : Browser.get().getOtherBookmarksBookmarks().getChildren())
 			if (item != excludeMe)
 				addItem(options, item, 1);
 
@@ -83,7 +84,7 @@ public class Utils
 		return getComboBoxItemsForBookmarks(null);
 	}
 
-	private static void addItem(ArrayList<ComboBoxItem> options, BookmarkItem item, int depth)
+	private static void addItem(ArrayList<ComboBoxItem> options, IBookmarkItem item, int depth)
 	{
 		if (item instanceof Folder)
 		{
@@ -94,7 +95,7 @@ public class Utils
 				prefix = prefix.concat("    ");
 			options.add(new ComboBoxItem(folder, prefix.concat(folder.getName())));
 
-			for (BookmarkItem bi : folder.getChildren())
+			for (IBookmarkItem bi : folder.getChildren())
 				addItem(options, bi, depth + 1);
 		}
 	}

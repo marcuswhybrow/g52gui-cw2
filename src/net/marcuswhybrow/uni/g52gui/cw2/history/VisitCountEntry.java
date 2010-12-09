@@ -1,14 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.history;
 
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
-import com.ucware.icontools.IconTools;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.swing.Icon;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  *

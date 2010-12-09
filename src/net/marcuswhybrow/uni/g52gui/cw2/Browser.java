@@ -1,12 +1,14 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.ClosedItemsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.WindowsChangeListener;
 import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import javax.swing.UnsupportedLookAndFeelException;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.IFrame;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.IReopenable;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -34,15 +36,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.AddBookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.IBookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.RootFolder;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
-import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.HistoryChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
 import net.marcuswhybrow.uni.g52gui.cw2.history.VisitCountEntry;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.WindowChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.WindowChangeListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,12 +60,12 @@ public class Browser implements ActionListener, WindowChangeListener
 	private static Browser browser = null;
 
 	private ArrayList<Window> windows = new ArrayList<Window>();
-	private Stack<Reopenable> closedItems = new Stack<Reopenable>();
+	private Stack<IReopenable> closedItems = new Stack<IReopenable>();
 
 	private ArrayList<WindowsChangeListener> windowsChangeListeners = new ArrayList<WindowsChangeListener>();
 	private ArrayList<ClosedItemsChangeListener> closedItemsChangeListeners = new ArrayList<ClosedItemsChangeListener>();
 
-	private Frame activeFrame = null;
+	private IFrame activeFrame = null;
 	private Window activeWindow = null;
 	private Window fullScreenWindow = null;
 
@@ -118,7 +120,10 @@ public class Browser implements ActionListener, WindowChangeListener
 		{
 			folderIcon = FileSystemView.getFileSystemView().getSystemIcon(new File(getClass().getResource(".").toURI()));
 		}
-		catch (URISyntaxException ex) {}
+		catch (Exception ex)
+		{
+			folderIcon = getImageIcon("assets/folderIcon.png");
+		}
 	}
 
 	private ImageIcon getImageIcon(String location)
@@ -337,7 +342,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		}
 	}
 
-	private static BookmarkItem convert(Element element)
+	private static IBookmarkItem convert(Element element)
 	{
 		if (element.getNodeName().equals(Folder.getRootFolderName()))
 		{
@@ -379,7 +384,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		notifyWindowsChangeListeners();
 	}
 
-	public void setActiveFrame(Frame frame)
+	public void setActiveFrame(IFrame frame)
 	{
 		activeFrame = frame;
 		if (frame instanceof Window)
@@ -409,7 +414,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		System.exit(0);
 	}
 
-	public void addClosedItem(Reopenable item)
+	public void addClosedItem(IReopenable item)
 	{
 		closedItems.push(item);
 		notifyClosedItemsChangeListeners();
@@ -417,7 +422,7 @@ public class Browser implements ActionListener, WindowChangeListener
 
 	public void openLastClosedItem()
 	{
-		Reopenable item;
+		IReopenable item;
 
 		while (!closedItems.isEmpty())
 		{
@@ -431,7 +436,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		}
 	}
 
-	public void openClosedItem(Reopenable item)
+	public void openClosedItem(IReopenable item)
 	{
 		item.reopen();
 		closedItems.remove(item);
@@ -560,7 +565,7 @@ public class Browser implements ActionListener, WindowChangeListener
 		return this.activeWindow;
 	}
 
-	public Frame getActiveFrame()
+	public IFrame getActiveFrame()
 	{
 		return this.activeFrame;
 	}
@@ -586,7 +591,7 @@ public class Browser implements ActionListener, WindowChangeListener
 			wcl.windowsHaveChanged(this.getWindows());
 	}
 
-	public Stack<Reopenable> getClosedItems()
+	public Stack<IReopenable> getClosedItems()
 	{
 		return this.closedItems;
 	}

@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.history;
 
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.HistoryChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import java.util.ArrayList;
 import java.util.Collections;

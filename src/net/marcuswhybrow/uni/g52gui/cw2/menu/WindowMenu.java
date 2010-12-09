@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.WindowsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.WindowsChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 
 /**

@@ -1,5 +1,6 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.FolderChangeListener;
 import java.util.ArrayList;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import org.w3c.dom.Document;
@@ -10,11 +11,11 @@ import org.w3c.dom.Node;
  *
  * @author Marcus Whybrow
  */
-public class Folder implements BookmarkItem
+public class Folder implements IBookmarkItem
 {
 	protected Folder parent;
 	protected String name;
-	protected ArrayList<BookmarkItem> children = new ArrayList<BookmarkItem>();
+	protected ArrayList<IBookmarkItem> children = new ArrayList<IBookmarkItem>();
 	protected boolean root = false;
 
 	private static String rootFolderName = "bookmarks";
@@ -74,7 +75,7 @@ public class Folder implements BookmarkItem
 
 		folder.setAttribute("name", name);
 		
-		for (BookmarkItem item : children)
+		for (IBookmarkItem item : children)
 			folder.appendChild(item.convertToNode(doc));
 		return folder;
 	}
@@ -82,7 +83,7 @@ public class Folder implements BookmarkItem
 	public String printOut()
 	{
 		String output = name + " (  ";
-		for (BookmarkItem item : children)
+		for (IBookmarkItem item : children)
 			output += item.printOut() + ", ";
 		return output.substring(0, output.length() - 2) + "  )";
 	}
@@ -93,7 +94,7 @@ public class Folder implements BookmarkItem
 		return name;
 	}
 
-	public void addChild(BookmarkItem item)
+	public void addChild(IBookmarkItem item)
 	{
 		if (item != null)
 		{
@@ -129,13 +130,13 @@ public class Folder implements BookmarkItem
 		this.hasChanged();
 	}
 
-	public BookmarkItem[] getChildren()
+	public IBookmarkItem[] getChildren()
 	{
-		BookmarkItem[] items = new BookmarkItem[children.size()];
+		IBookmarkItem[] items = new IBookmarkItem[children.size()];
 		return children.toArray(items);
 	}
 
-	void removeChild(BookmarkItem item)
+	void removeChild(IBookmarkItem item)
 	{
 		children.remove(item);
 		this.hasChanged();

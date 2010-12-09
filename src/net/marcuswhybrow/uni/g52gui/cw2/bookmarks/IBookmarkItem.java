@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
  *
  * @author Marcus Whybrow
  */
-public interface BookmarkItem
+public interface IBookmarkItem
 {
 	public Node convertToNode(Document doc);
 

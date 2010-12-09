@@ -1,4 +1,4 @@
-package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
+package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -26,18 +26,19 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.ComboBoxItem;
+import net.marcuswhybrow.uni.g52gui.cw2.utils.ComboBoxItem;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
-import net.marcuswhybrow.uni.g52gui.cw2.Utils;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.TabContent;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.IBookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
+import net.marcuswhybrow.uni.g52gui.cw2.utils.Utils;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder.CannotDeleteRootFolderExcetpion;
 
 /**
  *
  * @author Marcus Whybrow
  */
-public class BookmarkManagerTabContent extends JSplitPane implements TabContent
+public class BookmarkManagerTabContent extends JSplitPane implements ITabContent
 {
 	private FolderTree bookmarksTree;
 	private JList bookmarksList;
@@ -133,7 +134,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 					int index = list.locationToIndex(e.getPoint());
 					ListModel listModel = list.getModel();
 
-					BookmarkItem item = (BookmarkItem) listModel.getElementAt(index);
+					IBookmarkItem item = (IBookmarkItem) listModel.getElementAt(index);
 					list.ensureIndexIsVisible(index);
 
 					if (item instanceof Bookmark)
@@ -154,7 +155,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			for (int i = 0; i < dmtn.getChildCount(); i++)
 			{
 				DefaultMutableTreeNode dmtnChild = (DefaultMutableTreeNode) dmtn.getChildAt(i);
-				BookmarkItem compItem = (BookmarkItem) (dmtnChild).getUserObject();
+				IBookmarkItem compItem = (IBookmarkItem) (dmtnChild).getUserObject();
 				if (compItem instanceof Folder && ((Folder) compItem).equals(folder))
 				{
 					bookmarksTree.setSelectionPath(new TreePath(dmtnChild.getPath()));
@@ -182,7 +183,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 			{
 				ListModel listModel = list.getModel();
 				int index = list.getSelectedIndex();
-				BookmarkItem item = (BookmarkItem) listModel.getElementAt(index);
+				IBookmarkItem item = (IBookmarkItem) listModel.getElementAt(index);
 				list.ensureIndexIsVisible(index);
 
 				if (ke.getKeyCode() == KeyEvent.VK_ENTER)
@@ -457,7 +458,7 @@ public class BookmarkManagerTabContent extends JSplitPane implements TabContent
 		// carry on forever
 		if (depth < 0 || depth >= 1)
 		{
-			for (BookmarkItem child : folder.getChildren())
+			for (IBookmarkItem child : folder.getChildren())
 			{
 				if (! excludeFiles && child instanceof Bookmark)
 					node.add(convertToNode((Bookmark) child));

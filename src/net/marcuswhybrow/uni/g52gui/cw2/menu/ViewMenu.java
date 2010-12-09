@@ -6,7 +6,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.Settings;
-import net.marcuswhybrow.uni.g52gui.cw2.SettingsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.SettingsChangeListener;
 
 /**
  *

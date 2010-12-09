@@ -1,18 +1,21 @@
 package net.marcuswhybrow.uni.g52gui.cw2.bookmarks;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-import net.marcuswhybrow.uni.g52gui.cw2.Browser;
-import net.marcuswhybrow.uni.g52gui.cw2.ComboBoxItem;
+import net.marcuswhybrow.uni.g52gui.cw2.utils.ComboBoxItem;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
-import net.marcuswhybrow.uni.g52gui.cw2.Utils;
+import net.marcuswhybrow.uni.g52gui.cw2.utils.Utils;
 
 /**
  *
@@ -31,29 +34,53 @@ public class AddBookmark extends JFrame implements ActionListener
 		
 		this.page = page;
 
-		this.setLayout(new FlowLayout());
+		JPanel wrapper = new JPanel();
+		wrapper.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-		add(new JLabel("Bookmark Added!"));
+		wrapper.setLayout(new GridLayout(3,1));
+
 		title = new JTextField(page.getTitle());
-		add(title);
+		wrapper.add(title);
 
 		combo = Utils.getComboBoxForBookmarks();
+//		combo.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
 
-		add(combo);
+		wrapper.add(combo);
 
-		JButton done = new JButton("Done");
-		done.addActionListener(this);
-		add(done);
-		add(new JButton("Remove"));
+		JPanel buttons = new JPanel(new GridLayout(1,2));
 
+		JButton button = new JButton("Add");
+		button.addActionListener(this);
+		buttons.add(button);
+
+		button = new JButton("Cancel");
+		button.addActionListener(this);
+		buttons.add(button);
+
+//		buttons.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+
+		wrapper.add(buttons);
+
+		this.add(wrapper);
+
+		this.setMinimumSize(new Dimension(100, 0));
+		this.pack();
+		this.setResizable(false);
+
+		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent ae)
 	{
-		Folder folder = ((ComboBoxItem) combo.getSelectedItem()).getFolder();
-		page.setTitle(title.getText());
-		folder.addChild(new Bookmark(page));
-		this.dispose();
+		if ("Add".equals(ae.getActionCommand()))
+		{
+			Folder folder = ((ComboBoxItem) combo.getSelectedItem()).getFolder();
+			page.setTitle(title.getText());
+			folder.addChild(new Bookmark(page));
+			this.dispose();
+		}
+		else if ("Cancel".equals(ae.getActionCommand()))
+			this.dispose();
 	}
 }

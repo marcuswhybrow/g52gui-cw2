@@ -9,15 +9,15 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
-import net.marcuswhybrow.uni.g52gui.cw2.ClosedItemsChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.ClosedItemsChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.history.History;
-import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.HistoryChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
 import net.marcuswhybrow.uni.g52gui.cw2.history.VisitCountEntry;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.Reopenable;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.IReopenable;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.Window;
 import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
 
@@ -82,7 +82,7 @@ public class HistoryMenu extends Menu implements HistoryChangeListener, ClosedIt
 		title.setEnabled(false);
 		this.add(title);
 
-		for (Reopenable item : Browser.get().getClosedItems())
+		for (IReopenable item : Browser.get().getClosedItems())
 		{
 			if (item instanceof Tab)
 				this.add(new ClosedMenuItem(item, ((Tab) item).getCurrentLocation()));
@@ -110,16 +110,16 @@ public class HistoryMenu extends Menu implements HistoryChangeListener, ClosedIt
 		this.rebuild();
 	}
 
-	public void closedItemsHaveChanged(Stack<Reopenable> items)
+	public void closedItemsHaveChanged(Stack<IReopenable> items)
 	{
 		this.rebuild();
 	}
 
 	private class ClosedMenuItem extends BookmarkMenuItem
 	{
-		private Reopenable item;
+		private IReopenable item;
 
-		public ClosedMenuItem(Reopenable item , Page page)
+		public ClosedMenuItem(IReopenable item , Page page)
 		{
 			super(new Bookmark(page));
 			this.item = item;

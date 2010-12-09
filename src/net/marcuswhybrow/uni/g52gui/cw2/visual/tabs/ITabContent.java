@@ -9,4 +9,4 @@ package net.marcuswhybrow.uni.g52gui.cw2.visual.tabs;
  *
  * @author marcus
  */
-public interface TabContent {}
+public interface ITabContent {}

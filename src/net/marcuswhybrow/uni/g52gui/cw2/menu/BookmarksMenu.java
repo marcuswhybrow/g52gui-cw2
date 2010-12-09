@@ -7,10 +7,10 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import net.marcuswhybrow.uni.g52gui.cw2.Browser;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Bookmark;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkItem;
+import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.IBookmarkItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.BookmarkMenuItem;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.Folder;
-import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderChangeListener;
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.FolderChangeListener;
 import net.marcuswhybrow.uni.g52gui.cw2.bookmarks.FolderMenuItem;
 
 /**
@@ -38,7 +38,7 @@ public class BookmarksMenu extends Menu implements FolderChangeListener
 		addMenuItem("Bookmark All Tabs...", KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.SHIFT_MASK | Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		addSeparator();
 
-		for (BookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
+		for (IBookmarkItem item : Browser.get().getBookmarksBarBookmarks().getChildren())
 			addItem(this, item);
 
 		addSeparator();
@@ -46,23 +46,23 @@ public class BookmarksMenu extends Menu implements FolderChangeListener
 		Menu otherBookmarks = new Menu("Other Bookmarks");
 
 		Folder f = Browser.get().getOtherBookmarksBookmarks();
-		for (BookmarkItem item : f.getChildren())
+		for (IBookmarkItem item : f.getChildren())
 			addItem(otherBookmarks, item);
 		add(otherBookmarks);
 
 		this.validate();
 	}
 
-	private void addItem(JMenu menu, BookmarkItem item)
+	private void addItem(JMenu menu, IBookmarkItem item)
 	{
 		if (item instanceof Folder)
 		{
 			Folder folder = (Folder) item;
 			FolderMenuItem newMenu = new FolderMenuItem(folder);
 			menu.add(newMenu);
-			BookmarkItem[] children = folder.getChildren();
+			IBookmarkItem[] children = folder.getChildren();
 			if (children.length > 0)
-				for (BookmarkItem newItem : children)
+				for (IBookmarkItem newItem : children)
 					addItem(newMenu, newItem);
 			else
 			{

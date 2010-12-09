@@ -3,8 +3,6 @@ package net.marcuswhybrow.uni.g52gui.cw2.history;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.marcuswhybrow.uni.g52gui.cw2.BrowserPage;
 import net.marcuswhybrow.uni.g52gui.cw2.Page;
 import org.w3c.dom.Document;

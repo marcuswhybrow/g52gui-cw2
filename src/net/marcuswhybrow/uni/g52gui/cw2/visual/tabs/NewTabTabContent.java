@@ -8,7 +8,7 @@ import javax.swing.JScrollPane;
  *
  * @author marcus
  */
-public class NewTabTabContent extends JScrollPane implements TabContent
+public class NewTabTabContent extends JScrollPane implements ITabContent
 {
 	private Tab tab = null;
 

@@ -29,7 +29,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.history.HistoryEntry;
  *
  * @author marcus
  */
-public class HistoryTabContent extends JScrollPane implements TabContent, ListCellRenderer
+public class HistoryTabContent extends JScrollPane implements ITabContent, ListCellRenderer
 {
 	private Tab tab;
 	

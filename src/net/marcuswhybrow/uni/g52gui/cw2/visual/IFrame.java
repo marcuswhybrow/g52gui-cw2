@@ -9,6 +9,6 @@ package net.marcuswhybrow.uni.g52gui.cw2.visual;
  *
  * @author marcus
  */
-public interface Frame {
+public interface IFrame {
 	public void close();
 }

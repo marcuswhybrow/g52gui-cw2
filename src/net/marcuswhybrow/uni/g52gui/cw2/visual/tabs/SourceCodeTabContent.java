@@ -18,7 +18,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.Page;
  *
  * @author marcus
  */
-public class SourceCodeTabContent extends JScrollPane implements TabContent
+public class SourceCodeTabContent extends JScrollPane implements ITabContent
 {
 	private String sourceCode = "";
 	private URL url;

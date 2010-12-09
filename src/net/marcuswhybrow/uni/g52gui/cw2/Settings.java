@@ -1,7 +1,8 @@
 package net.marcuswhybrow.uni.g52gui.cw2;
 
+import net.marcuswhybrow.uni.g52gui.cw2.listeners.SettingsChangeListener;
 import java.awt.event.ActionEvent;
-import net.marcuswhybrow.uni.g52gui.cw2.visual.Frame;
+import net.marcuswhybrow.uni.g52gui.cw2.visual.IFrame;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -27,7 +28,7 @@ import net.marcuswhybrow.uni.g52gui.cw2.visual.tabs.Tab;
  *
  * @author Marcus Whybrow
  */
-public class Settings extends JFrame implements WindowListener, Frame
+public class Settings extends JFrame implements WindowListener, IFrame
 {
 	private static Settings settings;
 
