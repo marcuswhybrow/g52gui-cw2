@@ -9,3 +9,7 @@
 build/*
 dist/*
 nbproject/private/*
+
+bookmarks_bar.xml
+history.xml
+other_bookmarks.xml
